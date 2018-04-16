@@ -29,27 +29,44 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="app.constants.js" />
     <Compile Include="app.js" />
-    <Compile Include="routes\index.js" />
-    <Compile Include="routes\users.js" />
+    <Compile Include="components\institute\institute-admin\institute.admin.model.js" />
+    <Compile Include="components\institute\institute-admin\institute.admin.route.js" />
+    <Compile Include="components\institute\institute.model.js" />
+    <Compile Include="components\institute\institute.route.js" />
+    <Compile Include="components\shared\group.policy.model.js" />
+    <Compile Include="components\shared\login.route.js" />
+    <Compile Include="components\shared\user.auth.model.js" />
+    <Compile Include="components\super-admin\super.admin.model.js" />
+    <Compile Include="components\super-admin\super.admin.route.js" />
+    <Compile Include="components\trust\trust-admin\trust.admin.model.js" />
+    <Compile Include="components\trust\trust-admin\trust.admin.route.js" />
+    <Compile Include="components\trust\trust.model.js" />
+    <Compile Include="components\trust\trust.route.js" />
+    <Compile Include="config\auth.config.js" />
+    <Compile Include="utility\app.middleware.js" />
+    <Compile Include="utility\app.utils.js" />
+    <Content Include="document\api.data.html" />
+    <Content Include="document\index.html" />
     <Content Include="package.json" />
-    <Content Include="public\stylesheets\main.css" />
     <Content Include="README.md" />
-    <Content Include="views\index.pug" />
-    <Content Include="views\layout.pug" />
-    <Content Include="views\error.pug" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="public\" />
-    <Folder Include="public\images\" />
-    <Folder Include="public\javascripts\" />
-    <Folder Include="public\stylesheets\" />
-    <Folder Include="routes\" />
-    <Folder Include="views\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="components\" />
+    <Folder Include="components\institute\" />
+    <Folder Include="components\institute\institute-admin\" />
+    <Folder Include="components\shared\" />
+    <Folder Include="components\super-admin\" />
+    <Folder Include="components\trust\" />
+    <Folder Include="components\trust\trust-admin\" />
+    <Folder Include="config\" />
+    <Folder Include="document\" />
+    <Folder Include="utility\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

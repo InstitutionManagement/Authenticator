@@ -1,31 +1,52 @@
 ﻿'use strict';
-var debug = require('debug');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
+var mongoose = require('mongoose');
+var cors = require('cors');
 
 var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
+var url = 'mongodb://adwz007:700zwda@ds119268.mlab.com:19268/schooldb';
+mongoose.connect(url);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error to  db:'));
+db.once('open', function () {
+    // we're connected!
+    console.log('Connected correctly to server');
+});
+//Routers
+const trustRouter = require('./components/trust/trust.route');
+const loginRouter = require('./components/shared/login.route');
+const superAdminRouter = require('./components/super-admin/super.admin.route');
+const trustAdminRouter = require('./components/trust/trust-admin/trust.admin.route');
+//Middlewares
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../client')));
 
-app.use('/', routes);
-app.use('/users', users);
+
+//CORS Enable in Express
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+//CORS OPTIONS Enable
+app.options('*', cors());
+
+
+//Routes
+app.use('/', express.static(path.join(__dirname, './document')));
+app.use('/api/trust', trustRouter);
+app.use('/api/login', loginRouter);
+app.use('/api/superadmin', superAdminRouter);
+app.use('/api/trustadmin', trustAdminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
