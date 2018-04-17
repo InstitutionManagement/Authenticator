@@ -35,7 +35,7 @@
   },
   "scripts": {
     "format": "prettier --single-quote --print-width=120 --write --parser=flow --tab-width=2  {src,server}/**/**/*.{js,jsx}",
-    "start": "concurrently --kill-others \"set NODE_ENV=development && node ./app.js\""
+    "start": "concurrently --kill-others  \"node app.js\""
   },
   "devDependencies": {
     "debug": "^2.6.9"
