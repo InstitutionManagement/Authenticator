@@ -42,7 +42,7 @@ let SuperAdmin = new Schema({
     tag: {
       type: String,
       enum: ['ACTIVE', 'DELETED'],
-      default: 'ACTIVE',
+      default: 'ACTIVE'
     },
     toggled_by: {
       username: String,

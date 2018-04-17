@@ -18,7 +18,8 @@ module.exports = {
     'trustadmin/register': [0, 13],
     'trustadmin/deleteTrustAdmin/:userid': [0, 13],
     'trustadmin/updateTrustAdmin': [0, 21, 22],
-    'trustadmin/getAllTrustAdmin': [0, 13]
+    'trustadmin/getAllTrustAdmin': [0, 13],
+    
   },
   USER_ERROR: {
     u001: {
@@ -42,24 +43,22 @@ module.exports = {
   },
   DB_CODES: {
     db001: {
-      error_code: 'db001',
       message: "User doesn't exist!!!"
     },
     db002: {
-      error_code: 'db002',
       message: 'Successfully removed user'
     },
     db003: {
-      error_code: 'db003',
       message: 'Group policy not found'
     },
     db004: {
-      error_code: 'db004',
       message: 'Successfully removed the group policy'
     },
     db005: {
-      error_code: 'db005',
       message: 'Trust not found'
+    },
+    db006: {
+      message: 'User Successfully Restored'
     }
   },
   USER_CREATION_SUCCESS : {

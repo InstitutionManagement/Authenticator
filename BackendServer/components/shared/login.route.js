@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const _UserAuthModel = require('./user.auth.model');
 const _SuperAdminModel = require('../super-admin/super.admin.model');
 const _TrustAdminModel = require('../trust/trust-admin/trust.admin.model');
+
 //Utilities
 const appUtils = require('../../utility/app.utils');
 const appConst = require('../../app.constants');
@@ -25,7 +26,7 @@ loginRouter.route('/').post((req, res, next) => {
     }
     if (!appUtils.IsEmpty(auth)) {
       if (bcrypt.compareSync(req.body.password, auth.password)) {
-        dataout.data.token = jwt.sign({ id: auth._id , username : auth.username}, authConfig.secret, {
+        dataout.data.token = jwt.sign({ id: auth._id, username: auth.username }, authConfig.secret, {
           expiresIn: 86400
         });
         switch (auth.user_type) {
@@ -35,7 +36,13 @@ loginRouter.route('/').post((req, res, next) => {
                 dataout.data.token = null;
                 dataout.data.error = err;
                 res.json(dataout);
-              } else {
+              } 
+              else if(user.status.tag == "DELETED"){
+                dataout.data.token = null;
+                dataout.data.error = appConst.DB_CODES.db001;
+                res.json(dataout);
+              }
+              else {
                 dataout.data.user = user;
                 dataout.data.user.user_type = auth.user_type;
                 res.json(dataout);
@@ -48,7 +55,13 @@ loginRouter.route('/').post((req, res, next) => {
                 dataout.data.token = null;
                 dataout.data.error = err;
                 res.json(dataout);
-              } else {
+              }
+              else if(user.status.tag == "DELETED"){
+                dataout.data.token = null;
+                dataout.data.error = appConst.DB_CODES.db001;
+                res.json(dataout);
+              } 
+              else {
                 dataout.data.user = user;
                 dataout.data.user.user_type = auth.user_type;
                 res.json(dataout);
