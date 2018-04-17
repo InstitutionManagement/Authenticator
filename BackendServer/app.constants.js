@@ -62,6 +62,9 @@ module.exports = {
       message: 'Trust not found'
     }
   },
+  SUPER_ADMIN_CREATION_SUCCESS:{
+    message: "Successfully created new Super Admin !!!"
+  },
   USER_CREATION_SUCCESS : {
     message: "Successfully created user"
   },
