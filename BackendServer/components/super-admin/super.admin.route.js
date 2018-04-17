@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const passwordGen = require('password-generator');
 //Services
 const _UserAuthModel = require('../shared/user.auth.model');
 const _SuperAdminModel = require('../super-admin/super.admin.model');
@@ -263,6 +264,27 @@ superAdminRouter.route('/updateSuperAdmin')
     }
   );
 
+//Update credintials
+superAdminRouter.route('/admin/resetPassword')
+.post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/register']), (req, res, next) => {
+  let authId = req.body.auth_id
+  let dataout = new appUtils.DataModel();
+  let _password = passwordGen(8,false);
+  _UserAuthModel.findByIdAndUpdate(authId,{
+    $set:{
+      password: bcrypt.hashSync(_password, authConfig.saltRounds)
+    }
+  }, (err, user) => {
+    if(err){
+      dataout.error = err;
+      res.json(dataout);
+    } else {
+      dataout.data = appConst.DB_CODES.db008;
+      //send password to email and sms
+      res.json(dataout);
+    }
+  })
+})
 //Create a new group policy
 superAdminRouter.route('/newGroupPolicy')
   .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/newGroupPolicy']), (req, res, next) => {
