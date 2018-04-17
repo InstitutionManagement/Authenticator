@@ -59,6 +59,12 @@ module.exports = {
     },
     db006: {
       message: 'User Successfully Restored'
+    },
+    db007: {
+      message: 'Option does not exist' 
+    },
+    db008: {
+      message: 'Successfully changed password'
     }
   },
   USER_CREATION_SUCCESS : {
