@@ -79,11 +79,11 @@ superAdminRouter.route('/register')
                       dataout.error = err;
                       res.json(dataout);
                     } else {
-                      dataout.data = appConst.USER_CREATION_SUCCESS;
+                      dataout.data = appConst.SUPER_ADMIN_CREATION_SUCCESS;
                       res.json(dataout);
                     }
                   }
-                );
+
               }
             }
           );

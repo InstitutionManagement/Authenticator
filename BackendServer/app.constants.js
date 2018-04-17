@@ -67,6 +67,9 @@ module.exports = {
       message: 'Successfully changed password'
     }
   },
+  SUPER_ADMIN_CREATION_SUCCESS:{
+    message: "Successfully created new Super Admin !!!"
+  },
   USER_CREATION_SUCCESS : {
     message: "Successfully created user"
   },
