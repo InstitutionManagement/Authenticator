@@ -50,7 +50,6 @@
     <Content Include="document\api.data.html" />
     <Content Include="document\index.html" />
     <Content Include="package.json" />
-    <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />

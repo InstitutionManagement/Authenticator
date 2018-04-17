@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var cors = require('cors');
+var debug = require('debug');
 
 var app = express();
 var url = 'mongodb://adwz007:700zwda@ds119268.mlab.com:19268/schooldb';

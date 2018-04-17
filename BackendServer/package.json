@@ -12,7 +12,6 @@
     "chartist": "^0.10.1",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.4",
-    "debug": "~2.6.9",
     "dotenv": "4.0.0",
     "eslint": "3.19.0",
     "eslint-loader": "1.7.1",
@@ -37,5 +36,8 @@
   "scripts": {
     "format": "prettier --single-quote --print-width=120 --write --parser=flow --tab-width=2  {src,server}/**/**/*.{js,jsx}",
     "start": "concurrently --kill-others \"set NODE_ENV=development && node ./server/bin/www\""
+  },
+  "devDependencies": {
+    "debug": "^2.6.9"
   }
 }

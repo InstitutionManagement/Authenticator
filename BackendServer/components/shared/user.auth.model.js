@@ -32,7 +32,7 @@ let UserAuth = new Schema({
       default: 'ACTIVE',
     },
     toggled_by: {
-      name: String,
+      username: String,
       userAuth_id: Schema.Types.ObjectId
     }
   }

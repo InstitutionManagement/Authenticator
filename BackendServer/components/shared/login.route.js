@@ -25,7 +25,7 @@ loginRouter.route('/').post((req, res, next) => {
     }
     if (!appUtils.IsEmpty(auth)) {
       if (bcrypt.compareSync(req.body.password, auth.password)) {
-        dataout.data.token = jwt.sign({ id: auth._id }, authConfig.secret, {
+        dataout.data.token = jwt.sign({ id: auth._id , username : auth.username}, authConfig.secret, {
           expiresIn: 86400
         });
         switch (auth.user_type) {

@@ -17,14 +17,14 @@ const appConst = require('../../app.constants');
 
 const superAdminRouter = express.Router();
 superAdminRouter.use(bodyParser.json());
-//superAdminRouter.use(_AppMiddlewareService.verifyToken);
+superAdminRouter.use(_AppMiddlewareService.verifyToken);
 
 //Register a new SuperAdmin
 superAdminRouter
   .route('/register')
   .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/register']), (req, res, next) => {
     let dataout = new appUtils.DataModel();
-    let decodedToken = jwt.decode(req.header['x-access-token']);
+    let decodedToken = jwt.decode(req.headers['x-access-token']);
     // Create the user in SuperAdmin Model
     _SuperAdminModel.create(
       {
@@ -105,7 +105,7 @@ superAdminRouter
           dataout.data = [];
           superadmins.forEach((sa) => {
             dataout.data.push(new appUtils.SuperAdmin(sa, "STATUS_REQUIRED"));
-          })
+          });
           res.json(dataout);
         }
       });
@@ -168,39 +168,49 @@ superAdminRouter
 
 //Delete a SuperAdmin
 superAdminRouter
-  .route('/deleteSuperAdmin/:userid')
+  .route('/deleteSuperAdmin/:authid/:superadminid')
   .delete(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/deleteSuperAdmin/:userid']),
     (req, res, next) => {
       let dataout = new appUtils.DataModel();
-      let userid = req.params.userid;
-      let token = req.header['x-access-token']
-      _UserAuthModel.findByIdAndUpdate(userid,{
+      let authid = req.params.authid;
+      let decodedToken = jwt.decode(req.headers['x-access-token']);
+      _UserAuthModel.findByIdAndUpdate(authid,{
         $set:{
           status: {
             tag: 'DELETED',
             toggled_by: {
-              username: req.headers['x-access-username'],
-              userAuth_id: jwt.decode(token).id
+              username: decodedToken.username,
+              userAuth_id: decodedToken.id
             }
           }
         }
-      }, (err, user) => {
+      }, (err, success) => {
         if (err) {
           dataout.error = err;
           res.json(dataout);
-        } else if (!user) {
+        } else if (success.nModified == 0) {
           dataout.error = appConst.DB_CODES.db001;
           res.json(dataout);
         } else {
-          _SuperAdminModel.findByIdAndRemove(user.registered_id, err => {
-            if (err) {
-              dataout.error = err;
-              res.json(dataout);
-            } else {
-              dataout.data = appConst.DB_CODES.db002;
-              res.json(dataout);
+          _SuperAdminModel.findByIdAndUpdate(req.params.superadminid, {
+              $set:{
+                status: {
+                  tag: 'DELETED',
+                  toggled_by: {
+                    username: decodedToken.username,
+                    userAuth_id: decodedToken.id
+                  }
+                }
             }
-          });
+          },(err, success) => {
+              if (err) {
+                dataout.error = err;
+                res.json(dataout);
+              } else {
+                dataout.data = appConst.DB_CODES.db002;
+                res.json(dataout);
+              }
+            });
         }
       });
     }
