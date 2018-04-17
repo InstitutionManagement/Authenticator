@@ -45,7 +45,6 @@ trustRouter.route('/register').post(_AppMiddlewareService.verifyAccess([0, 1]), 
   );
 });
 
-
 //Update trust
 trustRouter.route('/update').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
   let dataout = new appUtils.DataModel();

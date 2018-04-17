@@ -23,6 +23,8 @@ const trustRouter = require('./components/trust/trust.route');
 const loginRouter = require('./components/shared/login.route');
 const superAdminRouter = require('./components/super-admin/super.admin.route');
 const trustAdminRouter = require('./components/trust/trust-admin/trust.admin.route');
+const commonRouter = require('./components/shared/common.route');
+
 //Middlewares
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -48,7 +50,7 @@ app.use('/api/trust', trustRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/superadmin', superAdminRouter);
 app.use('/api/trustadmin', trustAdminRouter);
-
+app.use('/api/common',commonRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');

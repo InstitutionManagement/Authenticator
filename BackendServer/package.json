@@ -34,7 +34,7 @@
     "mocha": "^5.0.0"
   },
   "scripts": {
-    "format": "prettier --single-quote --print-width=120 --write --parser=flow --tab-width=2  {src,server}/**/**/*.{js,jsx}",
+    "format": "prettier --single-quote --print-width=120 --write --parser=flow --tab-width=2  ./components/**/*.js",
     "start": "concurrently --kill-others  \"node app.js\""
   },
   "devDependencies": {

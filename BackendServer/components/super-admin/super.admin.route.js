@@ -20,8 +20,7 @@ superAdminRouter.use(bodyParser.json());
 superAdminRouter.use(_AppMiddlewareService.verifyToken);
 
 //Register a new SuperAdmin
-superAdminRouter
-  .route('/register')
+superAdminRouter.route('/register')
   .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/register']), (req, res, next) => {
     let dataout = new appUtils.DataModel();
     let decodedToken = jwt.decode(req.headers['x-access-token']);
@@ -35,7 +34,7 @@ superAdminRouter
         address: req.body.address,
         status: {
           tag: 'ACTIVE',
-          toggled_by:{
+          toggled_by: {
             username: decodedToken.username,
             userAuth_id: decodedToken.id
           }
@@ -55,7 +54,7 @@ superAdminRouter
               user_type: 'SuperAdmin',
               status: {
                 tag: 'ACTIVE',
-                toggled_by:{
+                toggled_by: {
                   username: decodedToken.username,
                   userAuth_id: decodedToken.id
                 }
@@ -67,19 +66,23 @@ superAdminRouter
                 res.json(dataout);
               } else {
                 // If success then update auth id in SuperAdmin Model
-                _SuperAdminModel.findByIdAndUpdate(superadmin._id, {
-                  $set:{
-                    auth_id: user._id
+                _SuperAdminModel.findByIdAndUpdate(
+                  superadmin._id,
+                  {
+                    $set: {
+                      auth_id: user._id
+                    }
+                  },
+                  (err, success) => {
+                    if (err) {
+                      dataout.error = err;
+                      res.json(dataout);
+                    } else {
+                      dataout.data = appConst.SUPER_ADMIN_CREATION_SUCCESS;
+                      res.json(dataout);
+                    }
                   }
-                },(err, success) => {
-                  if(err){
-                    dataout.error = err;
-                    res.json(dataout);
-                  } else {
-                    dataout.data = appConst.SUPER_ADMIN_CREATION_SUCCESS;
-                    res.json(dataout);
-                  }
-                });
+
               }
             }
           );
@@ -89,9 +92,9 @@ superAdminRouter
   });
 
 //Get all SuperAdmin
-superAdminRouter
-  .route('/getSuperAdmins')
-  .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/getAllSuperAdmins']),(req, res, next) => {
+superAdminRouter.route('/getSuperAdmins')
+  .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/getAllSuperAdmins']),
+    (req, res, next) => {
       let condition = {};
       if (!appUtils.IsEmpty(req.body) && !appUtils.IsEmpty(req.body.condition)) {
         condition = req.body.condition;
@@ -101,10 +104,10 @@ superAdminRouter
         if (err) {
           dataout.error = err;
           res.json(dataout);
-        } else { 
+        } else {
           dataout.data = [];
-          superadmins.forEach((sa) => {
-            dataout.data.push(new appUtils.SuperAdmin(sa, "STATUS_REQUIRED"));
+          superadmins.forEach(sa => {
+            dataout.data.push(new appUtils.SuperAdmin(sa, 'STATUS_REQUIRED'));
           });
           res.json(dataout);
         }
@@ -113,112 +116,123 @@ superAdminRouter
   );
 
 //Loophole to register dev as SuperAdmin
-superAdminRouter
- .route('/loophole/register')
-.post((req, res, next) => {
-  let dataout = new appUtils.DataModel();
-  // Create the user in SuperAdmin Model
-  _SuperAdminModel.create(
-    {
-      name: req.body.name,
-      email: req.body.email,
-      phone: req.body.phone,
-      address: req.body.address,
-      username:req.body.username
-    },
-    (err, superadmin) => {
-      if (err) {
-        dataout.error = err;
-        res.json(dataout);
-      } else {
-        //If success then create the user in UserAuth Model
-        _UserAuthModel.create(
-          {
-            username: req.body.username,
-            password: bcrypt.hashSync(req.body.password, authConfig.saltRounds),
-            registered_id: superadmin._id,
-            user_type: 'SuperAdmin',
-            privilage_code: [0]
-          },
-          (err, user) => {
-            if (err) {
-              dataout.error = err;
-              res.json(dataout);
-            } else {
-              _SuperAdminModel.findByIdAndUpdate(superadmin._id, {
-                $set:{
-                  auth_id: user._id
-                }
-              },(err, success) => {
-                if(err){
-                  dataout.error = err;
-                  res.json(dataout);
-                } else {
-                  dataout.data = appConst.USER_CREATION_SUCCESS;
-                  res.json(dataout);
-                }
-              });
-            }
-          }
-        );
-      }
-    }
-  );
-});
-
-//Delete a SuperAdmin
-superAdminRouter
-  .route('/deleteSuperAdmin/:authid/:superadminid')
-  .delete(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/deleteSuperAdmin/:userid']),
-    (req, res, next) => {
-      let dataout = new appUtils.DataModel();
-      let authid = req.params.authid;
-      let decodedToken = jwt.decode(req.headers['x-access-token']);
-      _UserAuthModel.findByIdAndUpdate(authid,{
-        $set:{
-          status: {
-            tag: 'DELETED',
-            toggled_by: {
-              username: decodedToken.username,
-              userAuth_id: decodedToken.id
-            }
-          }
-        }
-      }, (err, success) => {
+superAdminRouter.route('/loophole/register')
+  .post((req, res, next) => {
+    let dataout = new appUtils.DataModel();
+    // Create the user in SuperAdmin Model
+    _SuperAdminModel.create(
+      {
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        address: req.body.address,
+        username: req.body.username
+      },
+      (err, superadmin) => {
         if (err) {
           dataout.error = err;
           res.json(dataout);
-        } else if (success.nModified == 0) {
-          dataout.error = appConst.DB_CODES.db001;
-          res.json(dataout);
         } else {
-          _SuperAdminModel.findByIdAndUpdate(req.params.superadminid, {
-              $set:{
-                status: {
-                  tag: 'DELETED',
-                  toggled_by: {
-                    username: decodedToken.username,
-                    userAuth_id: decodedToken.id
-                  }
-                }
-            }
-          },(err, success) => {
+          //If success then create the user in UserAuth Model
+          _UserAuthModel.create(
+            {
+              username: req.body.username,
+              password: bcrypt.hashSync(req.body.password, authConfig.saltRounds),
+              registered_id: superadmin._id,
+              user_type: 'SuperAdmin',
+              privilage_code: [0]
+            },
+            (err, user) => {
               if (err) {
                 dataout.error = err;
                 res.json(dataout);
               } else {
-                dataout.data = appConst.DB_CODES.db002;
-                res.json(dataout);
+                _SuperAdminModel.findByIdAndUpdate(
+                  superadmin._id,
+                  {
+                    $set: {
+                      auth_id: user._id
+                    }
+                  },
+                  (err, success) => {
+                    if (err) {
+                      dataout.error = err;
+                      res.json(dataout);
+                    } else {
+                      dataout.data = appConst.USER_CREATION_SUCCESS;
+                      res.json(dataout);
+                    }
+                  }
+                );
               }
-            });
+            }
+          );
         }
-      });
+      }
+    );
+  });
+
+//Delete a SuperAdmin
+superAdminRouter.route('/deleteSuperAdmin/:authid/:superadminid')
+  .delete(
+    _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/deleteSuperAdmin/:userid']),
+    (req, res, next) => {
+      let dataout = new appUtils.DataModel();
+      let authid = req.params.authid;
+      let decodedToken = jwt.decode(req.headers['x-access-token']);
+      _UserAuthModel.findByIdAndUpdate(
+        authid,
+        {
+          $set: {
+            status: {
+              tag: 'DELETED',
+              toggled_by: {
+                username: decodedToken.username,
+                userAuth_id: decodedToken.id
+              }
+            }
+          }
+        },
+        (err, success) => {
+          if (err) {
+            dataout.error = err;
+            res.json(dataout);
+          } else if (success.nModified == 0) {
+            dataout.error = appConst.DB_CODES.db001;
+            res.json(dataout);
+          } else {
+            _SuperAdminModel.findByIdAndUpdate(
+              req.params.superadminid,
+              {
+                $set: {
+                  status: {
+                    tag: 'DELETED',
+                    toggled_by: {
+                      username: decodedToken.username,
+                      userAuth_id: decodedToken.id
+                    }
+                  }
+                }
+              },
+              (err, success) => {
+                if (err) {
+                  dataout.error = err;
+                  res.json(dataout);
+                } else {
+                  dataout.data = appConst.DB_CODES.db002;
+                  res.json(dataout);
+                }
+              }
+            );
+          }
+        }
+      );
     }
   );
 
+
 //Update the profile data of SuperAdmin by himself
-superAdminRouter
-  .route('/updateSuperAdmin')
+superAdminRouter.route('/updateSuperAdmin')
   .post(
     _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/updateSuperAdmin']),
     (req, res, next) => {
@@ -250,8 +264,7 @@ superAdminRouter
   );
 
 //Create a new group policy
-superAdminRouter
-  .route('/newGroupPolicy')
+superAdminRouter.route('/newGroupPolicy')
   .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/newGroupPolicy']), (req, res, next) => {
     let dataout = new appUtils.DataModel();
     _GroupPolicyModel.create(
@@ -273,8 +286,7 @@ superAdminRouter
   });
 
 //Update an existing group policy
-superAdminRouter
-  .route('/updateGroupPolicy')
+superAdminRouter.route('/updateGroupPolicy')
   .post(
     _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/updateGroupPolicy']),
     (req, res, next) => {
@@ -305,8 +317,7 @@ superAdminRouter
   );
 
 //Get all group policies with or without group code
-superAdminRouter
-  .route('/getAllGroupPolicy')
+superAdminRouter.route('/getAllGroupPolicy')
   .post(
     _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/getAllGroupPolicy']),
     (req, res, next) => {
@@ -328,8 +339,7 @@ superAdminRouter
   );
 
 //Remove group policy
-superAdminRouter
-  .route('/removeGroupPolicy/:grpcd')
+superAdminRouter.route('/removeGroupPolicy/:grpcd')
   .delete(
     _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/removeGroupPolicy']),
     (req, res, next) => {
@@ -347,8 +357,7 @@ superAdminRouter
   );
 
 //Attach group code to super admin
-superAdminRouter
-  .route('/setgroup')
+superAdminRouter.route('/setgroup')
   .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/setgroup']), (req, res, next) => {
     let dataout = new appUtils.DataModel();
     let updates = req.body;
@@ -387,4 +396,5 @@ superAdminRouter
     res.json(dataout);
   });
 
+//Export module
 module.exports = superAdminRouter;
