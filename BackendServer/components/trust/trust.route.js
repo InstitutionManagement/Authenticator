@@ -10,6 +10,7 @@ const _SuperAdminModel = require('../super-admin/super.admin.model');
 const _AppMiddlewareService = require('../../utility/app.middleware');
 const _GroupPolicyModel = require('../shared/group.policy.model');
 const _TrustModel = require('../trust/trust.model');
+const _TrustAdminModel = require('../trust/trust-admin/trust.admin.model');
 
 //Utility
 const authConfig = require('../../config/auth.config');
@@ -77,7 +78,8 @@ trustRouter.route('/update').post(_AppMiddlewareService.verifyAccess([0, 1]), (r
 });
 
 //get all trusts
-trustRouter.route('/getAllTrusts').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
+trustRouter.route('/getAllTrusts').post(_AppMiddlewareService.verifyAccess([0, 1]), 
+(req, res, next) => {
   let dataout = new appUtils.DataModel();
   let condition = {};
   if (!appUtils.IsEmpty(req.body.condition)) {
@@ -94,6 +96,42 @@ trustRouter.route('/getAllTrusts').post(_AppMiddlewareService.verifyAccess([0, 1
   });
 });
 
+
+//Delete a Trust
+trustRouter.route('/deleteTrust/:trustId')
+  .delete(
+    _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['trust/deleteTrust/:userid']),
+    (req, res, next) => {
+      let dataout = new appUtils.DataModel();
+      let trustId = req.params.trustId; 
+      let decodedToken = jwt.decode(req.headers['x-access-token']);
+      __TrustModel.findByIdAndUpdate(
+        trustId,
+        {
+          $set: {
+            status: {
+              tag: 'DELETED',
+              toggled_by: {
+                username: 'vectorgrid', //decodedToken.username,
+                userAuth_id: '5ad53dc213379108d0320515'//decodedToken.id
+              }
+            }
+          }
+        },
+        (err, success) => {
+          if (err) {
+            dataout.error = err;
+            res.json(dataout);
+          } else if (success.nModified == 0) {
+            dataout.error = appConst.DB_CODES.db00; // change later
+            res.json(dataout);
+          } else {
+
+          }
+        }
+      );
+    }
+  );
 /*
 //Delete a trust
 trustRouter.route('/deleteTrust/:trustid')

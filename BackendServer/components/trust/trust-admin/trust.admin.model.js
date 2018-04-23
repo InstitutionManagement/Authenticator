@@ -37,6 +37,17 @@ let TrustAdmin = new Schema({
     required: true,
     ref: 'Trust',
     unique: false
+  },
+  status: {
+    tag: {
+      type: String,
+      enum: ['ACTIVE', 'DELETED'],
+      default: 'ACTIVE'
+    },
+    toggled_by: {
+      username: String,
+      userAuth_id: Schema.Types.ObjectId
+    }
   }
 });
 

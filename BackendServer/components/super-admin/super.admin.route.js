@@ -188,8 +188,8 @@ superAdminRouter.route('/deleteSuperAdmin/:authid/:superadminid')
             status: {
               tag: 'DELETED',
               toggled_by: {
-                username: decodedToken.username,
-                userAuth_id: decodedToken.id
+                username:decodedToken.username,
+                userAuth_id:decodedToken.id
               }
             }
           }
@@ -209,8 +209,8 @@ superAdminRouter.route('/deleteSuperAdmin/:authid/:superadminid')
                   status: {
                     tag: 'DELETED',
                     toggled_by: {
-                      username: decodedToken.username,
-                      userAuth_id: decodedToken.id
+                      username:decodedToken.username,
+                      userAuth_id:decodedToken.id
                     }
                   }
                 }
