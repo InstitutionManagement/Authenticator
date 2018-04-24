@@ -113,6 +113,6 @@ trustAdminRouter
         }
       });
     }
-  )
-  
+  );
+
 module.exports = trustAdminRouter;
