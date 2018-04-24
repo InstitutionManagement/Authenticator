@@ -82,7 +82,7 @@ superAdminRouter.route('/register')
                       dataout.data = appConst.SUPER_ADMIN_CREATION_SUCCESS;
                       res.json(dataout);
                     }
-                  }
+                  });
 
               }
             }
