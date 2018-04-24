@@ -44,6 +44,7 @@ class SuperAdminModel {
     this.auth_id = _superadmin.auth_id;
     this.usename = _superadmin.username;
     this.image_url = _superadmin.image_url;
+    this.user_type = "SuperAdmin";
     if(option && option === "STATUS_REQUIRED") {
       this.status = _superadmin.status;
     }
