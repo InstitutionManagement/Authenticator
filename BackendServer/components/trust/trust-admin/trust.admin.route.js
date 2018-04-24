@@ -2,7 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 //Services
 const _UserAuthModel = require('../../shared/user.auth.model');
 const _AppMiddlewareService = require('../../../utility/app.middleware');
@@ -44,8 +44,7 @@ trustAdminRouter
         if (err) {
           dataout.error = err;
           res.json(dataout);
-        }
-        else{
+        } else {
           _UserAuthModel.create(
             {
               username: req.body.username,
@@ -64,13 +63,12 @@ trustAdminRouter
               if (err) {
                 dataout.error = err;
                 res.json(dataout);
-              }
-              // If success then return the required data
-              else {
+              } else {
+                // If success then return the required data
                 _TrustAdminModel.findByIdAndUpdate(
                   trustadmin._id,
                   {
-                    $set:{
+                    $set: {
                       auth_id: user._id
                     }
                   },
@@ -82,7 +80,8 @@ trustAdminRouter
                       dataout.data = appConst.TRUST_ADMIN_CREATION_SUCCESS;
                       res.json(dataout);
                     }
-                  });
+                  }
+                );
               }
             }
           );
@@ -93,7 +92,8 @@ trustAdminRouter
 
 trustAdminRouter
   .route('/getTrustAdmin')
-  .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['trustadmin/getAllTrustAdmin']),
+  .post(
+    _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['trustadmin/getAllTrustAdmin']),
     (req, res, next) => {
       let condition = {};
       if (!appUtils.IsEmpty(req.body) && !appUtils.IsEmpty(req.body.condition)) {

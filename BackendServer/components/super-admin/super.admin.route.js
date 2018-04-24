@@ -21,80 +21,83 @@ superAdminRouter.use(bodyParser.json());
 superAdminRouter.use(_AppMiddlewareService.verifyToken);
 
 //Register a new SuperAdmin
-superAdminRouter.route('/register')
-  .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/register']), (req, res, next) => {
-    let dataout = new appUtils.DataModel();
-    let decodedToken = jwt.decode(req.headers['x-access-token']);
-    // Create the user in SuperAdmin Model
-    _SuperAdminModel.create(
-      {
-        name: req.body.name,
-        username: req.body.username,
-        email: req.body.email,
-        phone: req.body.phone,
-        address: req.body.address,
-        status: {
-          tag: 'ACTIVE',
-          toggled_by: {
-            username: decodedToken.username,
-            userAuth_id: decodedToken.id
-          }
-        }
-      },
-      (err, superadmin) => {
-        if (err) {
-          dataout.error = err;
-          res.json(dataout);
-        } else {
-          //If success then create the user in UserAuth Model
-          _UserAuthModel.create(
-            {
-              username: req.body.username,
-              password: bcrypt.hashSync(req.body.password, authConfig.saltRounds),
-              registered_id: superadmin._id,
-              user_type: 'SuperAdmin',
-              status: {
-                tag: 'ACTIVE',
-                toggled_by: {
-                  username: decodedToken.username,
-                  userAuth_id: decodedToken.id
-                }
-              }
-            },
-            (err, user) => {
-              if (err) {
-                dataout.error = err;
-                res.json(dataout);
-              } else {
-                // If success then update auth id in SuperAdmin Model
-                _SuperAdminModel.findByIdAndUpdate(
-                  superadmin._id,
-                  {
-                    $set: {
-                      auth_id: user._id
-                    }
-                  },
-                  (err, success) => {
-                    if (err) {
-                      dataout.error = err;
-                      res.json(dataout);
-                    } else {
-                      dataout.data = appConst.SUPER_ADMIN_CREATION_SUCCESS;
-                      res.json(dataout);
-                    }
-                  });
-
-              }
-            }
-          );
+superAdminRouter
+.route('/register')
+.post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/register']), (req, res, next) => {
+  let dataout = new appUtils.DataModel();
+  let decodedToken = jwt.decode(req.headers['x-access-token']);
+  // Create the user in SuperAdmin Model
+  _UserAuthModel.create(
+    {
+      username: req.body.username,
+      password: bcrypt.hashSync(req.body.password, authConfig.saltRounds),
+      user_type: 'SuperAdmin',
+      status: {
+        tag: 'ACTIVE',
+        toggled_by: {
+          username: decodedToken.username,
+          userAuth_id: decodedToken.id
         }
       }
-    );
-  });
+    },
+    (err, user) => {
+      if (err) {
+        dataout.error = err;
+        res.json(dataout);
+      } else {
+        // If success then update auth id in SuperAdmin Model
+        _SuperAdminModel.create(
+          {
+            name: req.body.name,
+            username: req.body.username,
+            email: req.body.email,
+            phone: req.body.phone,
+            address: req.body.address,
+            auth_id: user._id,
+            status: {
+              tag: 'ACTIVE',
+              toggled_by: {
+                username: decodedToken.username,
+                userAuth_id: decodedToken.id
+              }
+            }
+          },
+          (err, superadmin) => {
+            if (err) {
+              dataout.error = err;
+              res.json(dataout);
+            } else {
+              //If success then create the user in UserAuth Model
+              _UserAuthModel.findByIdAndUpdate(
+                user._id,
+                {
+                  $set: {
+                    registered_id: superadmin._id
+                  }
+                },
+                (err, success) => {
+                  if (err) {
+                    dataout.error = err;
+                    res.json(dataout);
+                  } else {
+                    dataout.data = appConst.SUPER_ADMIN_CREATION_SUCCESS;
+                    res.json(dataout);
+                  }
+                }
+              );
+            }
+          }
+        );
+      }
+    }
+  );
+});
 
 //Get all SuperAdmin
-superAdminRouter.route('/getSuperAdmins')
-  .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/getAllSuperAdmins']),
+superAdminRouter
+  .route('/getSuperAdmins')
+  .post(
+    _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/getAllSuperAdmins']),
     (req, res, next) => {
       let condition = {};
       if (!appUtils.IsEmpty(req.body) && !appUtils.IsEmpty(req.body.condition)) {
@@ -117,64 +120,64 @@ superAdminRouter.route('/getSuperAdmins')
   );
 
 //Loophole to register dev as SuperAdmin
-superAdminRouter.route('/loophole/register')
-  .post((req, res, next) => {
-    let dataout = new appUtils.DataModel();
-    // Create the user in SuperAdmin Model
-    _SuperAdminModel.create(
-      {
-        name: req.body.name,
-        email: req.body.email,
-        phone: req.body.phone,
-        address: req.body.address,
-        username: req.body.username
-      },
-      (err, superadmin) => {
-        if (err) {
-          dataout.error = err;
-          res.json(dataout);
-        } else {
-          //If success then create the user in UserAuth Model
-          _UserAuthModel.create(
-            {
-              username: req.body.username,
-              password: bcrypt.hashSync(req.body.password, authConfig.saltRounds),
-              registered_id: superadmin._id,
-              user_type: 'SuperAdmin',
-              privilage_code: [0]
-            },
-            (err, user) => {
-              if (err) {
-                dataout.error = err;
-                res.json(dataout);
-              } else {
-                _SuperAdminModel.findByIdAndUpdate(
-                  superadmin._id,
-                  {
-                    $set: {
-                      auth_id: user._id
-                    }
-                  },
-                  (err, success) => {
-                    if (err) {
-                      dataout.error = err;
-                      res.json(dataout);
-                    } else {
-                      dataout.data = appConst.USER_CREATION_SUCCESS;
-                      res.json(dataout);
-                    }
+superAdminRouter.route('/loophole/register').post((req, res, next) => {
+  let dataout = new appUtils.DataModel();
+  // Create the user in SuperAdmin Model
+  _SuperAdminModel.create(
+    {
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      address: req.body.address,
+      username: req.body.username
+    },
+    (err, superadmin) => {
+      if (err) {
+        dataout.error = err;
+        res.json(dataout);
+      } else {
+        //If success then create the user in UserAuth Model
+        _UserAuthModel.create(
+          {
+            username: req.body.username,
+            password: bcrypt.hashSync(req.body.password, authConfig.saltRounds),
+            registered_id: superadmin._id,
+            user_type: 'SuperAdmin',
+            privilage_code: [0]
+          },
+          (err, user) => {
+            if (err) {
+              dataout.error = err;
+              res.json(dataout);
+            } else {
+              _SuperAdminModel.findByIdAndUpdate(
+                superadmin._id,
+                {
+                  $set: {
+                    auth_id: user._id
                   }
-                );
-              }
+                },
+                (err, success) => {
+                  if (err) {
+                    dataout.error = err;
+                    res.json(dataout);
+                  } else {
+                    dataout.data = appConst.USER_CREATION_SUCCESS;
+                    res.json(dataout);
+                  }
+                }
+              );
             }
-          );
-        }
+          }
+        );
       }
-    );
-  });
+    }
+  );
+});
 
 //Delete a SuperAdmin
-superAdminRouter.route('/deleteSuperAdmin/:authid/:superadminid')
+superAdminRouter
+  .route('/deleteSuperAdmin/:authid/:superadminid')
   .delete(
     _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/deleteSuperAdmin/:userid']),
     (req, res, next) => {
@@ -231,9 +234,9 @@ superAdminRouter.route('/deleteSuperAdmin/:authid/:superadminid')
     }
   );
 
-
 //Update the profile data of SuperAdmin by himself
-superAdminRouter.route('/updateSuperAdmin')
+superAdminRouter
+  .route('/updateSuperAdmin')
   .post(
     _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/updateSuperAdmin']),
     (req, res, next) => {
@@ -265,28 +268,34 @@ superAdminRouter.route('/updateSuperAdmin')
   );
 
 //Update credintials
-superAdminRouter.route('/admin/resetPassword')
-.post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/register']), (req, res, next) => {
-  let authId = req.body.auth_id
-  let dataout = new appUtils.DataModel();
-  let _password = passwordGen(8,false);
-  _UserAuthModel.findByIdAndUpdate(authId,{
-    $set:{
-      password: bcrypt.hashSync(_password, authConfig.saltRounds)
-    }
-  }, (err, user) => {
-    if(err){
-      dataout.error = err;
-      res.json(dataout);
-    } else {
-      dataout.data = appConst.DB_CODES.db008;
-      //send password to email and sms
-      res.json(dataout);
-    }
-  })
-})
+superAdminRouter
+  .route('/admin/resetPassword')
+  .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/register']), (req, res, next) => {
+    let authId = req.body.auth_id;
+    let dataout = new appUtils.DataModel();
+    let _password = passwordGen(8, false);
+    _UserAuthModel.findByIdAndUpdate(
+      authId,
+      {
+        $set: {
+          password: bcrypt.hashSync(_password, authConfig.saltRounds)
+        }
+      },
+      (err, user) => {
+        if (err) {
+          dataout.error = err;
+          res.json(dataout);
+        } else {
+          dataout.data = appConst.DB_CODES.db008;
+          //send password to email and sms
+          res.json(dataout);
+        }
+      }
+    );
+  });
 //Create a new group policy
-superAdminRouter.route('/newGroupPolicy')
+superAdminRouter
+  .route('/newGroupPolicy')
   .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/newGroupPolicy']), (req, res, next) => {
     let dataout = new appUtils.DataModel();
     _GroupPolicyModel.create(
@@ -308,7 +317,8 @@ superAdminRouter.route('/newGroupPolicy')
   });
 
 //Update an existing group policy
-superAdminRouter.route('/updateGroupPolicy')
+superAdminRouter
+  .route('/updateGroupPolicy')
   .post(
     _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/updateGroupPolicy']),
     (req, res, next) => {
@@ -339,7 +349,8 @@ superAdminRouter.route('/updateGroupPolicy')
   );
 
 //Get all group policies with or without group code
-superAdminRouter.route('/getAllGroupPolicy')
+superAdminRouter
+  .route('/getAllGroupPolicy')
   .post(
     _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/getAllGroupPolicy']),
     (req, res, next) => {
@@ -361,7 +372,8 @@ superAdminRouter.route('/getAllGroupPolicy')
   );
 
 //Remove group policy
-superAdminRouter.route('/removeGroupPolicy/:grpcd')
+superAdminRouter
+  .route('/removeGroupPolicy/:grpcd')
   .delete(
     _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/removeGroupPolicy']),
     (req, res, next) => {
@@ -379,7 +391,8 @@ superAdminRouter.route('/removeGroupPolicy/:grpcd')
   );
 
 //Attach group code to super admin
-superAdminRouter.route('/setgroup')
+superAdminRouter
+  .route('/setgroup')
   .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/setgroup']), (req, res, next) => {
     let dataout = new appUtils.DataModel();
     let updates = req.body;
