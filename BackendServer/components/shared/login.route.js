@@ -36,14 +36,12 @@ loginRouter.route('/').post((req, res, next) => {
                 dataout.data.token = null;
                 dataout.data.error = err;
                 res.json(dataout);
-              } 
-              else if(user.status.tag == "DELETED"){
+              } else if (user.status.tag == 'DELETED') {
                 dataout.data.token = null;
                 dataout.data.error = appConst.DB_CODES.db001;
                 res.json(dataout);
-              }
-              else {
-                dataout.data.user =  new appUtils.SuperAdmin(user);
+              } else {
+                dataout.data.user = new appUtils.SuperAdmin(user);
                 res.json(dataout);
               }
             });
@@ -54,13 +52,11 @@ loginRouter.route('/').post((req, res, next) => {
                 dataout.data.token = null;
                 dataout.data.error = err;
                 res.json(dataout);
-              }
-              else if(user.status.tag == "DELETED"){
+              } else if (user.status.tag == 'DELETED') {
                 dataout.data.token = null;
                 dataout.data.error = appConst.DB_CODES.db001;
                 res.json(dataout);
-              } 
-              else {
+              } else {
                 dataout.data.user = new appUtils.TrustAdmin(user);
                 res.json(dataout);
               }
