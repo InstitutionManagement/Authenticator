@@ -43,7 +43,7 @@ loginRouter.route('/').post((req, res, next) => {
                 res.json(dataout);
               }
               else {
-                dataout.data = new appUtils.SuperAdmin(user);
+                dataout.data.user =  new appUtils.SuperAdmin(user);
                 res.json(dataout);
               }
             });
