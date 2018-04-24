@@ -61,8 +61,10 @@ loginRouter.route('/').post((req, res, next) => {
                 res.json(dataout);
               }
             });
+            break;
           default:
-            res.json("This type of user doesn't exist");
+            dataout.error.message = "This type of user doesn't exist";
+            res.json(dataout);
         }
       } else {
         dataout.error = appConst.USER_ERROR.u002;
