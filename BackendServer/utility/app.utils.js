@@ -51,10 +51,27 @@ class SuperAdminModel {
   }
 }
 
+class TrustAdminModel {
+  constructor(_trustadmin, option){
+    this.superadmin_id = _trustadmin._id;
+    this.name = _trustadmin.name;
+    this.email = _trustadmin.email;
+    this.phone = _trustadmin.phone;
+    this.address = _trustadmin.address;
+    this.auth_id = _trustadmin.auth_id;
+    this.usename = _trustadmin.username;
+    this.image_url = _trustadmin.image_url;
+    this.user_type = "TrustAdmin";
+    if(option && option === "STATUS_REQUIRED") {
+      this.status = _trustadmin.status;
+    }
+  }
+}
 module.exports = {
   DecodeToken: DecodeToken,
   DataModel: DataModel,
   IsEmpty: IsEmpty,
-  SuperAdmin : SuperAdminModel
+  SuperAdmin : SuperAdminModel,
+  TrustAdmin : TrustAdminModel
 };
 
