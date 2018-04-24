@@ -24,14 +24,11 @@ trustAdminRouter
     let dataout = new appUtils.DataModel();
     let decodedToken = jwt.decode(req.headers['x-access-token']);
     // Create the user in TrustAdmin Model
-    _TrustAdminModel.create(
+    _UserAuthModel.create(
       {
-        name: req.body.name,
         username: req.body.username,
-        email: req.body.email,
-        phone: req.body.phone,
-        address: req.body.address,
-        parent_trust_id: req.body.parentTrustId,
+        password: bcrypt.hashSync(req.body.password, authConfig.saltRounds),
+        user_type: 'TrustAdmin',
         status: {
           tag: 'ACTIVE',
           toggled_by: {
@@ -40,17 +37,21 @@ trustAdminRouter
           }
         }
       },
-      (err, trustadmin) => {
+      (err, user) => {
         if (err) {
           dataout.error = err;
           res.json(dataout);
         } else {
-          _UserAuthModel.create(
+          // If success then return the required data
+          _TrustAdminModel.create(
             {
+              name: req.body.name,
               username: req.body.username,
-              password: bcrypt.hashSync(req.body.password, authConfig.saltRounds),
-              registered_id: trustadmin._id,
-              user_type: 'TrustAdmin',
+              email: req.body.email,
+              phone: req.body.phone,
+              address: req.body.address,
+              parent_trust_id: req.body.parentTrustId,
+              auth_id: user._id,
               status: {
                 tag: 'ACTIVE',
                 toggled_by: {
@@ -59,17 +60,16 @@ trustAdminRouter
                 }
               }
             },
-            (err, user) => {
+            (err, trustadmin) => {
               if (err) {
                 dataout.error = err;
                 res.json(dataout);
               } else {
-                // If success then return the required data
-                _TrustAdminModel.findByIdAndUpdate(
-                  trustadmin._id,
+                _UserAuthModel.findByIdAndUpdate(
+                  user._id,
                   {
                     $set: {
-                      auth_id: user._id
+                      registered_id: trustadmin._id
                     }
                   },
                   (err, success) => {

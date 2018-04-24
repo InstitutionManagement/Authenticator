@@ -22,76 +22,76 @@ superAdminRouter.use(_AppMiddlewareService.verifyToken);
 
 //Register a new SuperAdmin
 superAdminRouter
-.route('/register')
-.post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/register']), (req, res, next) => {
-  let dataout = new appUtils.DataModel();
-  let decodedToken = jwt.decode(req.headers['x-access-token']);
-  // Create the user in SuperAdmin Model
-  _UserAuthModel.create(
-    {
-      username: req.body.username,
-      password: bcrypt.hashSync(req.body.password, authConfig.saltRounds),
-      user_type: 'SuperAdmin',
-      status: {
-        tag: 'ACTIVE',
-        toggled_by: {
-          username: decodedToken.username,
-          userAuth_id: decodedToken.id
+  .route('/register')
+  .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['superadmin/register']), (req, res, next) => {
+    let dataout = new appUtils.DataModel();
+    let decodedToken = jwt.decode(req.headers['x-access-token']);
+    // Create the user in SuperAdmin Model
+    _UserAuthModel.create(
+      {
+        username: req.body.username,
+        password: bcrypt.hashSync(req.body.password, authConfig.saltRounds),
+        user_type: 'SuperAdmin',
+        status: {
+          tag: 'ACTIVE',
+          toggled_by: {
+            username: decodedToken.username,
+            userAuth_id: decodedToken.id
+          }
         }
-      }
-    },
-    (err, user) => {
-      if (err) {
-        dataout.error = err;
-        res.json(dataout);
-      } else {
-        // If success then update auth id in SuperAdmin Model
-        _SuperAdminModel.create(
-          {
-            name: req.body.name,
-            username: req.body.username,
-            email: req.body.email,
-            phone: req.body.phone,
-            address: req.body.address,
-            auth_id: user._id,
-            status: {
-              tag: 'ACTIVE',
-              toggled_by: {
-                username: decodedToken.username,
-                userAuth_id: decodedToken.id
+      },
+      (err, user) => {
+        if (err) {
+          dataout.error = err;
+          res.json(dataout);
+        } else {
+          // If success then update auth id in SuperAdmin Model
+          _SuperAdminModel.create(
+            {
+              name: req.body.name,
+              username: req.body.username,
+              email: req.body.email,
+              phone: req.body.phone,
+              address: req.body.address,
+              auth_id: user._id,
+              status: {
+                tag: 'ACTIVE',
+                toggled_by: {
+                  username: decodedToken.username,
+                  userAuth_id: decodedToken.id
+                }
+              }
+            },
+            (err, superadmin) => {
+              if (err) {
+                dataout.error = err;
+                res.json(dataout);
+              } else {
+                //If success then create the user in UserAuth Model
+                _UserAuthModel.findByIdAndUpdate(
+                  user._id,
+                  {
+                    $set: {
+                      registered_id: superadmin._id
+                    }
+                  },
+                  (err, success) => {
+                    if (err) {
+                      dataout.error = err;
+                      res.json(dataout);
+                    } else {
+                      dataout.data = appConst.SUPER_ADMIN_CREATION_SUCCESS;
+                      res.json(dataout);
+                    }
+                  }
+                );
               }
             }
-          },
-          (err, superadmin) => {
-            if (err) {
-              dataout.error = err;
-              res.json(dataout);
-            } else {
-              //If success then create the user in UserAuth Model
-              _UserAuthModel.findByIdAndUpdate(
-                user._id,
-                {
-                  $set: {
-                    registered_id: superadmin._id
-                  }
-                },
-                (err, success) => {
-                  if (err) {
-                    dataout.error = err;
-                    res.json(dataout);
-                  } else {
-                    dataout.data = appConst.SUPER_ADMIN_CREATION_SUCCESS;
-                    res.json(dataout);
-                  }
-                }
-              );
-            }
-          }
-        );
+          );
+        }
       }
-    }
-  );
-});
+    );
+  });
 
 //Get all SuperAdmin
 superAdminRouter
