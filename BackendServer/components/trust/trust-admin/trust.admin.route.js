@@ -95,7 +95,24 @@ trustAdminRouter
   .route('/getTrustAdmin')
   .post(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['trustadmin/getAllTrustAdmin']),
     (req, res, next) => {
-      
+      let condition = {};
+      if (!appUtils.IsEmpty(req.body) && !appUtils.IsEmpty(req.body.condition)) {
+        condition = req.body.condition;
+      }
+      _TrustAdminModel.find(condition, (err, trustadmin) => {
+        let dataout = new appUtils.DataModel();
+        if (err) {
+          dataout.error = err;
+          res.json(dataout);
+        } else {
+          dataout.data = [];
+          trustadmin.forEach(ta => {
+            dataout.data.push(new appUtils.TrustAdmin(ta, req.body.STATUS_REQUIRED));
+          });
+          res.json(dataout);
+        }
+      });
     }
   )
+  
 module.exports = trustAdminRouter;
