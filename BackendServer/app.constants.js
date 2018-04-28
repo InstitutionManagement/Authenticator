@@ -70,6 +70,9 @@ module.exports = {
   SUPER_ADMIN_CREATION_SUCCESS:{
     message: "Successfully created new Super Admin !!!"
   },
+  SUPER_ADMIN_UPDATE_SUCCESS: {
+    message: "Successfully updated super admin"
+  },
   TRUST_ADMIN_CREATION_SUCCESS:{
     message: "Successfully created new Trust Admin !!!"
   },

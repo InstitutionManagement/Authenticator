@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var cors = require('cors');
 var debug = require('debug');
+const upload = require('express-fileupload');
 
 var app = express();
 var url = 'mongodb://adwz007:700zwda@ds119268.mlab.com:19268/schooldb';
@@ -24,14 +25,15 @@ const loginRouter = require('./components/shared/login.route');
 const superAdminRouter = require('./components/super-admin/super.admin.route');
 const trustAdminRouter = require('./components/trust/trust-admin/trust.admin.route');
 const commonRouter = require('./components/shared/common.route');
-
+const imageUploadRouter = require('./components/shared/image.upload.route');
 //Middlewares
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../client')));
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+//imageUploadRouter.use(upload());
 
 //CORS Enable in Express
 app.use(function (req, res, next) {
@@ -46,11 +48,14 @@ app.options('*', cors());
 
 //Routes
 app.use('/', express.static(path.join(__dirname, './document')));
+app.use('/displayimage', express.static(path.join(__dirname, './images')));
 app.use('/api/trust', trustRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/superadmin', superAdminRouter);
 app.use('/api/trustadmin', trustAdminRouter);
 app.use('/api/common',commonRouter);
+app.use('/api/image',imageUploadRouter);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     var err = new Error('Not Found');

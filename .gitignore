@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 ./BackendServer/node_modules
+./BackendServer/images
