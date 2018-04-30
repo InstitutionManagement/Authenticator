@@ -7,6 +7,11 @@ let Institute = new Schema({
     required: true,
     unique: false
   },
+  parent_trust_id:{
+    type:Schema.Types.ObjectId,
+    required: true,
+    unique: false
+  },
   email: {
     type: string,
     required: true,
@@ -20,7 +25,7 @@ let Institute = new Schema({
   address: {
     type: String,
     required: false,
-    unique: true
+    unique: false
   },
   created_by: {
     name: {
@@ -38,11 +43,23 @@ let Institute = new Schema({
   },
   website: {
     type: String,
-    required: false
+    required: false,
+    unique: false
   },
   document_link: {
     type: String,
     required: false
+  },
+  status: {
+    tag: {
+      type: String,
+      enum: ['ACTIVE', 'DELETED'],
+      default: 'ACTIVE'
+    },
+    toggled_by: {
+      username: String,
+      userAuth_id: Schema.Types.ObjectId
+    }
   }
 });
 
