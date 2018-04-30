@@ -23,6 +23,7 @@ trustRouter.use(_AppMiddlewareService.verifyToken);
 //Register a Trust
 trustRouter.route('/register').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
   let dataout = new appUtils.DataModel();
+  let decodedToken = appUtils.DecodeToken(req.headers['x-access-token'])
   _TrustModel.create(
     {
       name: req.body.name,
@@ -31,7 +32,14 @@ trustRouter.route('/register').post(_AppMiddlewareService.verifyAccess([0, 1]), 
       address: req.body.address,
       created_by: req.body.created_by,
       website: req.body.website,
-      document_link: req.body.document_link
+      document_link: req.body.document_link,
+      status: {
+        tag: 'ACTIVE',
+        toggled_by: {
+          username: decodedToken.username,
+          userAuth_id: decodedToken.id
+        }
+      }
     },
     (err, trust) => {
       if (err) {
@@ -88,31 +96,155 @@ trustRouter.route('/getAllTrusts').post(_AppMiddlewareService.verifyAccess([0, 1
       dataout.error = err;
       res.json(dataout);
     } else {
-      dataout.data = trusts;
+      dataout.data = [];
+      trusts.forEach(trust => {
+        dataout.data.push(new appUtils.Trust(trust, "STATUS_REQUIRED"))
+      });
       res.json(dataout);
     }
   });
 });
 
-/*
+
 //Delete a trust
 trustRouter.route('/deleteTrust/:trustid')
 .delete(_AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE["trust/deleteTrust/:trustId"]),(req, res, next) => {
   let dataout = new appUtils.DataModel();
   let trustid = req.params.trustId
-  _TrustModel.findByIdAndRemove(trustid, (err, trust) => {
-    if(err){
-      dataout.error = err;
-      res.json(dataout);
-    } 
-    else if(!trust){
-      dataout.error = appConst.DB_CODES.db005;
-      res.json(dataout);
-    }
-    else{
-      
-    }
-  })
-})*/
+  let decodedToken = appUtils.DecodeToken(req.headers['x-access-token']);
+  Promise.all([TrustDelete(trustid, decodedToken.username, decodedToken.id),
+              TrustAdminDelete(trustid, decodedToken.username, decodedToken.id)])
+              .then(data => {
+                dataout.data = data;
+                res.json(dataout);
+              })
+              .catch(e => {
+                dataout.error = e;
+                res.json(dataout);
+              });
+});
 
 module.exports = trustRouter;
+
+
+//Service functions
+TrustDelete = (_trustId, _username, _auth_id) => {
+  return new Promise((resolve, reject) => {
+    _TrustModel.findByIdAndUpdate(_trustId,
+      {
+        $set:{
+          status:{
+            tag: "DELETED",
+            toggled_by: {
+              username: _username,
+              userAuth_id: _auth_id
+            }
+          }
+        }
+      },
+      (err, success)=>{
+        if(err){
+          reject(appConst.TRUST_REMOVE_FAILED);
+        } else {
+          resolve(appConst.TRUST_REMOVE_SUCCESS);
+        }
+      }
+    )
+  });
+}
+
+TrustAdminDelete = (_parent_trust_id, _username, _auth_id) => {
+  return new Promise((resolve, reject)=>{
+    _TrustAdminModel.update(
+      {
+        parent_trust_id : _parent_trust_id
+      },
+      {
+        $set:{
+          status:{
+            tag: "DELETED",
+            toggled_by: {
+              username: _username,
+              userAuth_id: _auth_id
+            }
+          }
+        }
+      },
+      {"multi" : true},
+      (err, success) => {
+        if(err){
+          reject(appConst.TRUST_ADMIN_REMOVE_FAILED);
+        } else if(success.nModified == 0){
+          reject(appConst.TRUST_ADMIN_REMOVE_FAILED);
+        } else{
+          _TrustAdminModel.find({
+            parent_trust_id : _parent_trust_id
+          },
+          (err, trustadmins) =>{
+            if(err){
+              reject(appConst.TRUST_ADMIN_REMOVE_FAILED);
+            } else {
+              superadmin_auth_ids = [];
+              if(trustadmins.length > 0){
+                trustadmins.forEach(trustadmin => {
+                  superadmin_auth_ids.push(trustadmin.auth_id);
+                });
+                _UserAuthModel.update(
+                  {
+                    _id: { $in : superadmin_auth_ids}
+                  },
+                  {
+                    $set:{
+                      status:{
+                        tag: "DELETED",
+                        toggled_by: {
+                          username: _username,
+                          userAuth_id: _auth_id
+                        }
+                      }
+                    }
+                  },
+                  {"multi" : true},
+                  (err, success)=> {
+                    if(err){
+                      reject(appConst.TRUST_ADMIN_REMOVE_FAILED);
+                    } else if(!success){
+                      reject(appConst.TRUST_ADMIN_REMOVE_FAILED);
+                    } else{
+                      resolve(appConst.TRUST_ADMIN_REMOVE_SUCCESS);
+                    }
+                  }
+                )
+              } else {
+                reject(appConst.TRUST_ADMIN_REMOVE_FAILED);
+              }
+            }
+          })
+        }
+      }
+    )
+  });
+}
+
+FetchTrustAdminIds = (_parent_trust_id) => {
+  return new Promise((resolve, reject) => {
+    _TrustAdminModel.find(
+      {
+        parent_trust_id: _parent_trust_id
+      },
+      (err, trustadmins) => {
+        if(err){
+          reject(appConst.TRUST_ADMIN_ID_FETCH_FAILED);
+        } else if(trustadmins.length == 0){
+          reject(appConst.TRUST_ADMIN_DOESNOT_EXIST);
+        } else {
+          let data = [];
+          trustadmins.forEach(trustadmin => {
+            data.push(new appUtils.IdSet(trustadmin._id, trustadmin.auth_id));
+          })
+          resolve(data);
+        }
+      }
+    )
+  })
+}

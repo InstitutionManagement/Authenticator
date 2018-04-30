@@ -67,6 +67,9 @@ module.exports = {
       message: 'Successfully changed password'
     }
   },
+  AUTHENTICATION_FAILURE : {
+    message: "Credintials are invalid"
+  },
   SUPER_ADMIN_CREATION_SUCCESS:{
     message: "Successfully created new Super Admin !!!"
   },
@@ -76,10 +79,27 @@ module.exports = {
   TRUST_ADMIN_CREATION_SUCCESS:{
     message: "Successfully created new Trust Admin !!!"
   },
+  TRUST_ADMIN_REMOVE_SUCCESS:{
+    message: "Successfully removed Trust Admin"
+  },
+  TRUST_ADMIN_REMOVE_FAILED: {
+    message: "Failed to remove trust admin"
+  },
   USER_CREATION_SUCCESS : {
     message: "Successfully created user"
   },
-  
+  TRUST_REMOVE_SUCCESS : {
+    message: "Sucessfully removed trust"
+  },
+  TRUST_REMOVE_FAILED : {
+    message: "Failed to remove trust"
+  },
+  TRUST_ADMIN_ID_FETCH_FAILED: {
+    message:"Failed to fetch trust admin ids"
+  },
+  TRUST_ADMIN_DOESNOT_EXIST:{
+    message:"Trust admin doesn't exist"
+  },
   ACCESS_ERRORS: {
     a001: {
       error_code: 'a001',

@@ -64,8 +64,16 @@ superAdminRouter
             },
             (err, superadmin) => {
               if (err) {
-                dataout.error = err;
-                res.json(dataout);
+                _UserAuthModel.findByIdAndRemove(user._id, (error, success) => {
+                  if(error){
+                    dataout.error = error;
+                    res.json(dataout);
+                  } else {
+                    dataout.error = err;
+                    res.json(dataout);
+                  }
+                })
+                
               } else {
                 //If success then create the user in UserAuth Model
                 _UserAuthModel.findByIdAndUpdate(

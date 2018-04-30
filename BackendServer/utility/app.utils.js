@@ -1,4 +1,8 @@
 const jwt = require('jsonwebtoken');
+const _TrustModel = require('../components/trust/trust.model');
+const _TrustAdminModel = require('../components/trust/trust-admin/trust.admin.model');
+const _UserAuthModel = require('../components/shared/user.auth.model');
+const appConst = require('../app.constants');
 DecodeToken = token => {
   return jwt.decode(token);
 };
@@ -42,7 +46,7 @@ class SuperAdminModel {
     this.phone = _superadmin.phone;
     this.address = _superadmin.address;
     this.auth_id = _superadmin.auth_id;
-    this.usename = _superadmin.username;
+    this.username = _superadmin.username;
     this.image_url = _superadmin.image_url;
     this.user_type = "SuperAdmin";
     if(option && option === "STATUS_REQUIRED") {
@@ -59,7 +63,7 @@ class TrustAdminModel {
     this.phone = _trustadmin.phone;
     this.address = _trustadmin.address;
     this.auth_id = _trustadmin.auth_id;
-    this.usename = _trustadmin.username;
+    this.username = _trustadmin.username;
     this.image_url = _trustadmin.image_url;
     this.user_type = "TrustAdmin";
     if(option && option === "STATUS_REQUIRED") {
@@ -67,11 +71,34 @@ class TrustAdminModel {
     }
   }
 }
+
+class TrustModel {
+  constructor(_trust, option){
+    this.name = _trust.name;
+    this.email = _trust.email;
+    this.phone = _trust.phone;
+    this.address = _trust.address;
+    this.website = _trust.website;
+    if(option && option === "STATUS_REQUIRED") {
+      this.status = _trust.status;
+    }
+  }
+}
+
+class IdSet{
+  constructor(_registered_id, _auth_id){
+    this._id = _registered_id;
+    this.auth_id = _auth_id;
+  }
+}
+
 module.exports = {
   DecodeToken: DecodeToken,
   DataModel: DataModel,
   IsEmpty: IsEmpty,
   SuperAdmin : SuperAdminModel,
-  TrustAdmin : TrustAdminModel
+  TrustAdmin : TrustAdminModel,
+  Trust : TrustModel,
+  IdSet: IdSet 
 };
 

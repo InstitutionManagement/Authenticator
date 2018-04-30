@@ -62,6 +62,15 @@ trustAdminRouter
             },
             (err, trustadmin) => {
               if (err) {
+                _UserAuthModel.findByIdAndRemove(user._id, (error, success) => {
+                  if(error){
+                    dataout.error = error;
+                    res.json(dataout);
+                  } else {
+                    dataout.error = err;
+                    res.json(dataout);
+                  }
+                })
                 dataout.error = err;
                 res.json(dataout);
               } else {

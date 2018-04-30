@@ -45,6 +45,17 @@ let Trust = new Schema({
     type: String,
     required: false,
     unique: false
+  },
+  status: {
+    tag: {
+      type: String,
+      enum: ['ACTIVE', 'DELETED'],
+      default: 'ACTIVE'
+    },
+    toggled_by: {
+      username: String,
+      userAuth_id: Schema.Types.ObjectId
+    }
   }
 });
 
