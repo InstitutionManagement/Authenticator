@@ -106,6 +106,9 @@ module.exports = {
       message: 'Action is not permitted'
     }
   },
+  INSTITUTION_ADMIN_CREATION_SUCCESS:{
+    message: "Successfully created new Institution Admin !!!"
+  },
   USER_SETTINGS: {
     push_root: false
   }

@@ -26,6 +26,7 @@ const superAdminRouter = require('./components/super-admin/super.admin.route');
 const trustAdminRouter = require('./components/trust/trust-admin/trust.admin.route');
 const commonRouter = require('./components/shared/common.route');
 const imageUploadRouter = require('./components/shared/image.upload.route');
+const institutionAdminRouter = require('./components/institute/institute-admin/institute.admin.route');
 //Middlewares
 app.use(logger('dev'));
 
@@ -53,6 +54,7 @@ app.use('/api/trust', trustRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/superadmin', superAdminRouter);
 app.use('/api/trustadmin', trustAdminRouter);
+app.use('/api/institutionadmin', institutionAdminRouter);
 app.use('/api/common',commonRouter);
 app.use('/api/image',imageUploadRouter);
 

@@ -7,6 +7,11 @@ let InstituteAdmin = new Schema({
     required: true,
     unique: false
   },
+  username: {
+    type: String,
+    required: true,
+    unique:true
+  },
   email: {
     type: String,
     required: true,
@@ -43,6 +48,17 @@ let InstituteAdmin = new Schema({
     required: true,
     ref: 'Institute',
     unique: false
+  },
+  status: {
+    tag: {
+      type: String,
+      enum: ['ACTIVE', 'DELETED'],
+      default: 'ACTIVE'
+    },
+    toggled_by: {
+      username: String,
+      userAuth_id: Schema.Types.ObjectId
+    }
   }
 });
 

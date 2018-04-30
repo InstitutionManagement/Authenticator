@@ -6,11 +6,98 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 //Services
 const _UserAuthModel = require('../../shared/user.auth.model');
-
+const _AppMiddlewareService = require('../../../utility/app.middleware');
+const _InstitutionAdmonModel = require('./institute.admin.model');
 //Utilities
-const appUtils = require('../../utility/app.utils');
-const appConst = require('../../app.constants');
-const authConfig = require('../../config/auth.config');
+const appUtils = require('../../../utility/app.utils');
+const appConst = require('../../../app.constants');
+const authConfig = require('../../../config/auth.config');
 
-const loginRouter = express.Router();
-loginRouter.use(bodyParser.json());
+const InstitutionAdminRouter = express.Router();
+InstitutionAdmin.use(bodyParser.json());
+InstitutionAdmin.use(_AppMiddlewareService.verifyToken);
+
+InstitutionAdmin.route('/register')
+.post(_AppMiddlewareService.verifyAccess([0]), (req, res) => {
+    let dataout = new appUtils.DataModel();
+    let decodedToken = jwt.decode(req.headers['x-access-token']);
+    _UserAuthModel.create(
+        {
+            username: req.body.username,
+            password: bcrypt.hashSync(req.body.password, authConfig.saltRounds),
+            user_type: 'InstitutionAdmin',
+            status: {
+              tag: 'ACTIVE',
+              toggled_by: {
+                username: decodedToken.username,
+                userAuth_id: decodedToken.id
+              }
+            }
+        },
+        (err, user) =>{
+            if(err){
+                dataout.error = err;
+                res.json(dataout);
+            } else {
+                _InstitutionAdmonModel.create(
+                    {
+                        name: req.body.name,
+                        username: req.body.username,
+                        email: req.body.email,
+                        phone: req.body.phone,
+                        address: req.body.address,
+                        parent_trust_id: req.body.parentTrustId,
+                        parent_institution_id: req.body.parentInstituteId,
+                        auth_id: user._id,
+                        status: {
+                          tag: 'ACTIVE',
+                          toggled_by: {
+                            username: decodedToken.username,
+                            userAuth_id: decodedToken.id
+                          }
+                        }
+                    },
+                    (err, institutionadmin => {
+                        if(err){
+                            _UserAuthModel.findByIdAndRemove(
+                                {
+                                    _id: user._id
+                                },
+                                (error, success)=> {
+                                    if(err){
+                                        dataout.error = error;
+                                        res.json(dataout);
+                                    } else {
+                                        dataout.error = err;
+                                        res.json(dataout);
+                                    }
+                                }
+                            )
+                            
+                        } else{
+                            _UserAuthModel.findByIdAndUpdate(
+                                user._id,
+                                {
+                                  $set: {
+                                    registered_id: institutionadmin._id
+                                  }
+                                },
+                                (err, success) => {
+                                  if (err) {
+                                    dataout.error = err;
+                                    res.json(dataout);
+                                  } else {
+                                    dataout.data = appConst.INSTITUTION_ADMIN_CREATION_SUCCESS;
+                                    res.json(dataout);
+                                  }
+                                }
+                              );
+                        }
+                    })
+                )
+            }
+        }
+    )
+})
+
+module.exports = InstitutionAdminRouter;
