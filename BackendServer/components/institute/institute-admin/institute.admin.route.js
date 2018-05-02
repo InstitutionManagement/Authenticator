@@ -7,17 +7,17 @@ const jwt = require('jsonwebtoken');
 //Services
 const _UserAuthModel = require('../../shared/user.auth.model');
 const _AppMiddlewareService = require('../../../utility/app.middleware');
-const _InstitutionAdmonModel = require('./institute.admin.model');
+const _InstitutionAdminModel = require('./institute.admin.model');
 //Utilities
 const appUtils = require('../../../utility/app.utils');
 const appConst = require('../../../app.constants');
 const authConfig = require('../../../config/auth.config');
 
 const InstitutionAdminRouter = express.Router();
-InstitutionAdmin.use(bodyParser.json());
-InstitutionAdmin.use(_AppMiddlewareService.verifyToken);
+InstitutionAdminRouter.use(bodyParser.json());
+InstitutionAdminRouter.use(_AppMiddlewareService.verifyToken);
 
-InstitutionAdmin.route('/register')
+InstitutionAdminRouter.route('/register')
 .post(_AppMiddlewareService.verifyAccess([0]), (req, res) => {
     let dataout = new appUtils.DataModel();
     let decodedToken = jwt.decode(req.headers['x-access-token']);
@@ -39,7 +39,7 @@ InstitutionAdmin.route('/register')
                 dataout.error = err;
                 res.json(dataout);
             } else {
-                _InstitutionAdmonModel.create(
+                _InstitutionAdminModel.create(
                     {
                         name: req.body.name,
                         username: req.body.username,
@@ -57,7 +57,7 @@ InstitutionAdmin.route('/register')
                           }
                         }
                     },
-                    (err, institutionadmin => {
+                    (err, institutionadmin) => {
                         if(err){
                             _UserAuthModel.findByIdAndRemove(
                                 {
@@ -73,7 +73,6 @@ InstitutionAdmin.route('/register')
                                     }
                                 }
                             )
-                            
                         } else{
                             _UserAuthModel.findByIdAndUpdate(
                                 user._id,
@@ -91,13 +90,13 @@ InstitutionAdmin.route('/register')
                                     res.json(dataout);
                                   }
                                 }
-                              );
+                            );
                         }
-                    })
-                )
+                    }
+                );
             }
         }
-    )
-})
+    );
+});
 
 module.exports = InstitutionAdminRouter;

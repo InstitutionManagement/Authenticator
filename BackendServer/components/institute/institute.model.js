@@ -7,8 +7,8 @@ let Institute = new Schema({
     required: true,
     unique: false
   },
-  parent_trust_id:{
-    type:Schema.Types.ObjectId,
+  parent_trust_id: {
+    type: Schema.Types.ObjectId,
     required: true,
     unique: false
   },
