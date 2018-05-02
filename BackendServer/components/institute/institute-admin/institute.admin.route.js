@@ -99,4 +99,27 @@ InstitutionAdminRouter.route('/register')
     );
 });
 
+InstitutionAdminRouter.route('/getInstituteAdmins')
+.post(_AppMiddlewareService.verifyAccess([0]), (req, res) => {
+    let dataout = new appUtils.DataModel()
+    let condition = {};
+    if(!appUtils.IsEmpty(req.body) && !appUtils.IsEmpty(req.body.condition)){
+        condition = req.body.condition;
+    }
+    _InstitutionAdminModel.find(
+        condition,
+        (err, institutionadmins) =>{
+            if(err){
+                dataout.error = err;
+                res.json(dataout);
+            } else {
+                dataout.data = [];
+                institutionadmins.forEach(ia => {
+                    dataout.data.push(new appUtils.InstitutionAdmin(ia, req.body.STATUS_REQUIRED));
+                });
+                res.json(dataout);
+            }
+        }
+    )
+});
 module.exports = InstitutionAdminRouter;
