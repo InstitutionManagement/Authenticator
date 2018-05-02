@@ -13,7 +13,7 @@ let Institute = new Schema({
     unique: false
   },
   email: {
-    type: string,
+    type: String,
     required: true,
     unique: true
   },
