@@ -21,6 +21,7 @@ db.once('open', function () {
 });
 //Routers
 const trustRouter = require('./components/trust/trust.route');
+const instituteRouter = require('./components/institute/institute.route');
 const loginRouter = require('./components/shared/login.route');
 const superAdminRouter = require('./components/super-admin/super.admin.route');
 const trustAdminRouter = require('./components/trust/trust-admin/trust.admin.route');
@@ -51,6 +52,7 @@ app.options('*', cors());
 app.use('/', express.static(path.join(__dirname, './document')));
 app.use('/displayimage', express.static(path.join(__dirname, './images')));
 app.use('/api/trust', trustRouter);
+app.use('/api/institute', instituteRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/superadmin', superAdminRouter);
 app.use('/api/trustadmin', trustAdminRouter);
