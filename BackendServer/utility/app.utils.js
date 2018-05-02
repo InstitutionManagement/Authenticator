@@ -92,6 +92,7 @@ class IdSet{
   }
 }
 
+
 class InstitutionAdminModel {
   constructor(_instituteadmin, option){
     this.instituteadmin_id = _instituteadmin._id;
@@ -110,6 +111,22 @@ class InstitutionAdminModel {
     }
   }
 }
+
+class InstituteModel {
+  constructor(_institute, option){
+    this.name = _institute.name;
+    this.parent_trust_id = _institute.parent_trust_id;
+    this.email = _institute.email;
+    this.phone = _institute.phone;
+    this.address = _institute.address;
+    this.website = _institute.website;
+    if(option && option === "STATUS_REQUIRED") {
+      this.status = _institute.status;
+    }
+  }
+}
+
+
 module.exports = {
   DecodeToken: DecodeToken,
   DataModel: DataModel,
@@ -118,6 +135,7 @@ module.exports = {
   TrustAdmin : TrustAdminModel,
   Trust : TrustModel,
   IdSet: IdSet,
-  InstitutionAdmin : InstitutionAdminModel 
+  InstitutionAdmin : InstitutionAdminModel, 
+  Institute : InstituteModel
 };
 
