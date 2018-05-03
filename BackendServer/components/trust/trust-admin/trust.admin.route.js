@@ -137,7 +137,7 @@ trustAdminRouter
                   trustIdNameMap[trust._id] = trust.name;
                 });
                 trustadmins.forEach(trustadmin => {
-                  dataout.data.push(new appUtils.TrustAdmin(ta, 
+                  dataout.data.push(new appUtils.TrustAdmin(trustadmin, 
                     {
                       status_required : "STATUS_REQUIRED", 
                       trust_name: trustIdNameMap[trustadmin.parent_trust_id]
