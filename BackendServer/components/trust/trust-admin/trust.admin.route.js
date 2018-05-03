@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 const _UserAuthModel = require('../../shared/user.auth.model');
 const _AppMiddlewareService = require('../../../utility/app.middleware');
 const _TrustAdminModel = require('./trust.admin.model');
+const _TrustModel = require('../trust.model');
 //Utility
 const authConfig = require('../../../config/auth.config');
 const appUtils = require('../../../utility/app.utils');
@@ -108,20 +109,52 @@ trustAdminRouter
       if (!appUtils.IsEmpty(req.body) && !appUtils.IsEmpty(req.body.condition)) {
         condition = req.body.condition;
       }
-      _TrustAdminModel.find(condition, (err, trustadmin) => {
+      _TrustAdminModel.find(condition, (err, trustadmins) => {
         let dataout = new appUtils.DataModel();
         if (err) {
           dataout.error = err;
           res.json(dataout);
         } else {
           dataout.data = [];
-          trustadmin.forEach(ta => {
-            dataout.data.push(new appUtils.TrustAdmin(ta, req.body.STATUS_REQUIRED));
+          let trustIds = [];
+          trustadmins.forEach(ta => {
+            trustIds.push(ta.parent_trust_id);
           });
-          res.json(dataout);
+          _TrustModel.find(
+            {
+              _id:{
+                $in:trustIds
+              }
+            },
+            '_id name',
+            (error, trusts)=>{
+              if(error){
+                dataout.error = error;
+                res.json(dataout);
+              } else {
+                let trustIdNameMap = {};
+                trusts.forEach(trust => {
+                  trustIdNameMap[trust._id] = trust.name;
+                });
+                trustadmins.forEach(trustadmin => {
+                  dataout.data.push(new appUtils.TrustAdmin(ta, 
+                    {
+                      status_required : "STATUS_REQUIRED", 
+                      trust_name: trustIdNameMap[trustadmin.parent_trust_id]
+                    }
+                  ));
+                });
+                res.json(dataout);
+              }
+            }
+          );
         }
       });
     }
   );
 
+trustAdminRouter.route('/updateTrustAdmin')
+.post(_AppMiddlewareService.verifyAccess([0]), (req, res, next)=>{
+  
+})
 module.exports = trustAdminRouter;

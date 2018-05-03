@@ -57,7 +57,7 @@ class SuperAdminModel {
 
 class TrustAdminModel {
   constructor(_trustadmin, option){
-    this.superadmin_id = _trustadmin._id;
+    this.trustadmin_id = _trustadmin._id;
     this.name = _trustadmin.name;
     this.email = _trustadmin.email;
     this.phone = _trustadmin.phone;
@@ -65,15 +65,20 @@ class TrustAdminModel {
     this.auth_id = _trustadmin.auth_id;
     this.username = _trustadmin.username;
     this.image_url = _trustadmin.image_url;
+    this.parent_trust_id = _trustadmin.parent_institute_id;
     this.user_type = "TrustAdmin";
-    if(option && option === "STATUS_REQUIRED") {
+    if(option && option.status_required && option.status_required === "STATUS_REQUIRED") {
       this.status = _trustadmin.status;
+    }
+    if(option && option.trust_name){
+      this.trust_name = option.trust_name
     }
   }
 }
 
 class TrustModel {
   constructor(_trust, option){
+    this.trust_id = _trust._id;
     this.name = _trust.name;
     this.email = _trust.email;
     this.phone = _trust.phone;

@@ -50,11 +50,11 @@ instituteRouter.route('/register').post(_AppMiddlewareService.verifyAccess([0, 1
   );
 });
 
-//get all institutes
+//get institutes
 instituteRouter.route('/getAllInstitutes').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
   let dataout = new appUtils.DataModel();
   let condition = {};
-  if (!appUtils.IsEmpty(req.body.condition)) {
+  if (!appUtils.IsEmpty(req.body) && !appUtils.IsEmpty(req.body.condition)) {
     condition = req.body.condition;
   }
   _InstituteModel.find(condition, (err, institutes) => {

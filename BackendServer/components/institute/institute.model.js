@@ -48,7 +48,8 @@ let Institute = new Schema({
   },
   document_link: {
     type: String,
-    required: false
+    required: false,
+    unique: false
   },
   status: {
     tag: {

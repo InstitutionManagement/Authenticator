@@ -190,14 +190,14 @@ TrustAdminDelete = (_parent_trust_id, _username, _auth_id) => {
               if (err) {
                 reject(appConst.TRUST_ADMIN_REMOVE_FAILED);
               } else {
-                superadmin_auth_ids = [];
+                trustadmin_auth_ids = [];
                 if (trustadmins.length > 0) {
                   trustadmins.forEach(trustadmin => {
-                    superadmin_auth_ids.push(trustadmin.auth_id);
+                    trustadmin_auth_ids.push(trustadmin.auth_id);
                   });
                   _UserAuthModel.update(
                     {
-                      _id: { $in: superadmin_auth_ids }
+                      _id: { $in: trustadmin_auth_ids }
                     },
                     {
                       $set: {
@@ -232,6 +232,7 @@ TrustAdminDelete = (_parent_trust_id, _username, _auth_id) => {
     );
   });
 };
+
 
 FetchTrustAdminIds = _parent_trust_id => {
   return new Promise((resolve, reject) => {
