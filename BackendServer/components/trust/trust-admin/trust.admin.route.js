@@ -51,7 +51,7 @@ trustAdminRouter
               email: req.body.email,
               phone: req.body.phone,
               address: req.body.address,
-              parent_trust_id: req.body.parentTrustId,
+              parent_trust_id: req.body.parent_trust_id,
               auth_id: user._id,
               status: {
                 tag: 'ACTIVE',
@@ -126,7 +126,6 @@ trustAdminRouter
                 $in:trustIds
               }
             },
-            '_id name',
             (error, trusts)=>{
               if(error){
                 dataout.error = error;

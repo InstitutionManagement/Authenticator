@@ -233,7 +233,6 @@ TrustAdminDelete = (_parent_trust_id, _username, _auth_id) => {
   });
 };
 
-
 FetchTrustAdminIds = _parent_trust_id => {
   return new Promise((resolve, reject) => {
     _TrustAdminModel.find(

@@ -125,8 +125,11 @@ class InstituteModel {
     this.phone = _institute.phone;
     this.address = _institute.address;
     this.website = _institute.website;
-    if(option && option === "STATUS_REQUIRED") {
+    if(option && option.status_required && option.status_required === "STATUS_REQUIRED") {
       this.status = _institute.status;
+    }
+    if(option && option.trust_name){
+      this.trust_name = option.trust_name;
     }
   }
 }

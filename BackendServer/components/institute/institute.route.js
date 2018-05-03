@@ -8,10 +8,10 @@ const mongoose = require('mongoose');
 //Services
 const _AppMiddlewareService = require('../../utility/app.middleware');
 const _InstituteModel = require('../institute/institute.model');
-
+const _TrustModel = require('../trust/trust.model');
 //Utility
 const appUtils = require('../../utility/app.utils');
-
+const appConst = require('../../app.constants');
 const instituteRouter = express.Router();
 instituteRouter.use(bodyParser.json());
 instituteRouter.use(_AppMiddlewareService.verifyToken);
@@ -19,7 +19,7 @@ instituteRouter.use(_AppMiddlewareService.verifyToken);
 //register an institute
 instituteRouter.route('/register').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
   let dataout = new appUtils.DataModel();
-  let decodedToken = appUtils.DecodeToken(req.headers['x-access-token'])
+  let decodedToken = appUtils.DecodeToken(req.headers['x-access-token']);
   _InstituteModel.create(
     {
       name: req.body.name,
@@ -43,7 +43,7 @@ instituteRouter.route('/register').post(_AppMiddlewareService.verifyAccess([0, 1
         dataout.error = err;
         res.json(dataout);
       } else {
-        dataout.data = institute;
+        dataout.data = appConst.INSTITUTE_CREATION_SUCCESS;
         res.json(dataout);
       }
     }
@@ -51,7 +51,7 @@ instituteRouter.route('/register').post(_AppMiddlewareService.verifyAccess([0, 1
 });
 
 //get institutes
-instituteRouter.route('/getAllInstitutes').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
+instituteRouter.route('/getInstitutes').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
   let dataout = new appUtils.DataModel();
   let condition = {};
   if (!appUtils.IsEmpty(req.body) && !appUtils.IsEmpty(req.body.condition)) {
@@ -62,11 +62,38 @@ instituteRouter.route('/getAllInstitutes').post(_AppMiddlewareService.verifyAcce
       dataout.error = err;
       res.json(dataout);
     } else {
-      dataout.data = [];
+      let trustIds = [];
       institutes.forEach(institute => {
-        dataout.data.push(new appUtils.Institute(institute, "STATUS_REQUIRED"))
+        trustIds.push(institute.parent_trust_id);
       });
-      res.json(dataout);
+      _TrustModel.find(
+        {
+          _id: {
+            $in: trustIds
+          }
+        },
+        (err, trusts) => {
+          if (err) {
+            dataout.error = err;
+            res.json(dataout);
+          } else {
+            let trustIdNameMap = {};
+            trusts.forEach(trust => {
+              trustIdNameMap[trust._id] = trust.name;
+            });
+            dataout.data = [];
+            institutes.forEach(institute => {
+              dataout.data.push(
+                new appUtils.Institute(institute, {
+                  status_required: 'STATUS_REQUIRED',
+                  trust_name: trustIdNameMap[institute.parent_trust_id]
+                })
+              );
+            });
+            res.json(dataout);
+          }
+        }
+      );
     }
   });
 });

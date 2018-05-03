@@ -100,6 +100,9 @@ module.exports = {
   TRUST_ADMIN_DOESNOT_EXIST:{
     message:"Trust admin doesn't exist"
   },
+  INSTITUTE_CREATION_SUCCESS:{
+    message:"Successfully created a institute"
+  },
   ACCESS_ERRORS: {
     a001: {
       error_code: 'a001',
