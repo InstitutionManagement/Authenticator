@@ -19,6 +19,11 @@ module.exports = {
     'trustadmin/deleteTrustAdmin/:userid': [0, 13],
     'trustadmin/updateTrustAdmin': [0, 21, 22],
     'trustadmin/getAllTrustAdmin': [0, 13],
+
+    'institute/deleteInstitute/:instituteId': [0, 13],
+    'institute/register': [0, 13],
+    'institute/getAllInstitutes': [0, 13],
+    'institute/updateInstitute': [0, 13],
     
   },
   USER_ERROR: {
@@ -108,6 +113,18 @@ module.exports = {
       error_code: 'a001',
       message: 'Action is not permitted'
     }
+  },
+  INSTITUTE_ADMIN_REMOVE_SUCCESS:{
+    message: "Successfully removed institute admin"
+  },
+  INSTITUTE_ADMIN_REMOVE_FAILED: {
+    message: "Failed to remove institute admin"
+  },
+  INSTITUTE_REMOVE_SUCCESS : {
+    message: "Sucessfully removed institute"
+  },
+  INSTITUTE_REMOVE_FAILED : {
+    message: "Failed to remove institute"
   },
   INSTITUTION_ADMIN_CREATION_SUCCESS:{
     message: "Successfully created new Institution Admin !!!"
