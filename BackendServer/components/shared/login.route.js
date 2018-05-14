@@ -14,8 +14,27 @@ const appUtils = require('../../utility/app.utils');
 const appConst = require('../../app.constants');
 const authConfig = require('../../config/auth.config');
 
+
+//cache
+const NodeCache = require( "node-cache" );
+const userAuthCache = new NodeCache( { stdTTL: 100, checkperiod: 120 } );
+
 const loginRouter = express.Router();
 loginRouter.use(bodyParser.json());
+
+
+var cacheUserInfo = function(id , username){
+    cacheObj = { id: id , username: username };
+    userAuthCache.set( "userCache", cacheObj) /*, function( err, success ){
+    if( !err && success ){
+        console.log( success );
+        dataout.data.cacheMessage = "Value Cached";
+      }
+    else{
+        dataout.data.cacheMessage = "Value not Cached";
+      }
+    });*/
+}
 
 loginRouter.route('/').post((req, res, next) => {
   let dataout = new appUtils.DataModel();
@@ -42,6 +61,7 @@ loginRouter.route('/').post((req, res, next) => {
                 res.json(dataout);
               } else {
                 dataout.data.user = new appUtils.SuperAdmin(user);
+                cacheUserInfo(auth._id , auth.username);
                 res.json(dataout);
               }
             });
@@ -58,6 +78,7 @@ loginRouter.route('/').post((req, res, next) => {
                 res.json(dataout);
               } else {
                 dataout.data.user = new appUtils.TrustAdmin(user);
+                cacheUserInfo(auth._id , auth.username);
                 res.json(dataout);
               }
             });
