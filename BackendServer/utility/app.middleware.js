@@ -9,7 +9,7 @@ const appUtils = require('../utility/app.utils');
 const appConst = require('../app.constants');
 
 
-//cache user information
+//cache
 const NodeCache = require( "node-cache" );
 const userAuthCache = new NodeCache( { stdTTL: 100, checkperiod: 120 } );
 
@@ -22,14 +22,29 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json(dataout);
   }
 
-  var value = myCache.get( "myKey" );
-
   jwt.verify(token, authConfig.secret, function(err, decoded) {
     if (err) {
       dataout.error = { auth: false, message: 'Failed to authenticate token.' };
       return res.status(500).json(dataout);
     }
-    next();
+    else{
+       /* userAuthCache.get( "usercache", function( err, value ){
+          if( !err ){
+            if(value == undefined){
+
+              console.log("key not found");
+              // key not found
+            }else{
+              console.log( value );
+              //{ my: "Special", variable: 42 }
+              // ... do something ...
+            }
+          }
+        });*/
+        value = userAuthCache.get("usercache");
+        console.log(value);
+        next();
+      }
   });
 };
 
