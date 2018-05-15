@@ -8,6 +8,11 @@ const authConfig = require('../config/auth.config');
 const appUtils = require('../utility/app.utils');
 const appConst = require('../app.constants');
 
+
+//cache
+const NodeCache = require( "node-cache" );
+const userAuthCache = new NodeCache( { stdTTL: 100, checkperiod: 120 } );
+
 //Function
 const verifyToken = (req, res, next) => {
   let dataout = new appUtils.DataModel();
@@ -22,7 +27,24 @@ const verifyToken = (req, res, next) => {
       dataout.error = { auth: false, message: 'Failed to authenticate token.' };
       return res.status(500).json(dataout);
     }
-    next();
+    else{
+       /* userAuthCache.get( "usercache", function( err, value ){
+          if( !err ){
+            if(value == undefined){
+
+              console.log("key not found");
+              // key not found
+            }else{
+              console.log( value );
+              //{ my: "Special", variable: 42 }
+              // ... do something ...
+            }
+          }
+        });*/
+        value = userAuthCache.get("usercache");
+        console.log(value);
+        next();
+      }
   });
 };
 
