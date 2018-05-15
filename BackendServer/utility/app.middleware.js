@@ -8,6 +8,11 @@ const authConfig = require('../config/auth.config');
 const appUtils = require('../utility/app.utils');
 const appConst = require('../app.constants');
 
+
+//cache user information
+const NodeCache = require( "node-cache" );
+const userAuthCache = new NodeCache( { stdTTL: 100, checkperiod: 120 } );
+
 //Function
 const verifyToken = (req, res, next) => {
   let dataout = new appUtils.DataModel();
@@ -16,6 +21,8 @@ const verifyToken = (req, res, next) => {
     dataout.error = { auth: false, message: 'No token provided.' };
     return res.status(401).json(dataout);
   }
+
+  var value = myCache.get( "myKey" );
 
   jwt.verify(token, authConfig.secret, function(err, decoded) {
     if (err) {
