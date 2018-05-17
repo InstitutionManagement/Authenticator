@@ -28,8 +28,26 @@ const verifyToken = (req, res, next) => {
       return res.status(500).json(dataout);
     }
     else{
-        var user = cacheUserInfo.returnUserInfo()
-        next();
+        var userDetails; 
+        userDetails = cacheUserInfo.returnUserInfo();
+        let id  = jwt.decode(token).id;
+        let username = jwt.decode(token).username;
+        
+        if(userDetails && userDetails.id == id && userDetails.username == username)
+            next();
+        else{
+          _UserAuthModel.findById(id, (err, user) => {
+              if(user && user.username == username){
+                cacheUserInfo.storeUserInfo(id , username);
+                next();
+              }
+              else {
+                dataout.error = appConst.ACCESS_ERRORS.a001;
+                res.json(dataout);
+            }
+          });
+
+        }
       }
   });
 };
