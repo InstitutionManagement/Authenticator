@@ -9,9 +9,9 @@ const appUtils = require('../utility/app.utils');
 const appConst = require('../app.constants');
 
 
-//cache
-const NodeCache = require( "node-cache" );
-const userAuthCache = new NodeCache( { stdTTL: 100, checkperiod: 120 } );
+//cacheconst 
+const cacheUserInfo = require('../components/shared/cache.user.info')
+
 
 //Function
 const verifyToken = (req, res, next) => {
@@ -28,21 +28,7 @@ const verifyToken = (req, res, next) => {
       return res.status(500).json(dataout);
     }
     else{
-       /* userAuthCache.get( "usercache", function( err, value ){
-          if( !err ){
-            if(value == undefined){
-
-              console.log("key not found");
-              // key not found
-            }else{
-              console.log( value );
-              //{ my: "Special", variable: 42 }
-              // ... do something ...
-            }
-          }
-        });*/
-        value = userAuthCache.get("usercache");
-        console.log(value);
+        var user = cacheUserInfo.returnUserInfo()
         next();
       }
   });
