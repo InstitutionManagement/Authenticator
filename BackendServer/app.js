@@ -28,6 +28,7 @@ const trustAdminRouter = require('./components/trust/trust-admin/trust.admin.rou
 const commonRouter = require('./components/shared/common.route');
 const imageUploadRouter = require('./components/shared/image.upload.route');
 const institutionAdminRouter = require('./components/institute/institute-admin/institute.admin.route');
+const containerRouter = require('./components/containers/container.route');
 //Middlewares
 app.use(logger('dev'));
 
@@ -59,6 +60,7 @@ app.use('/api/trustadmin', trustAdminRouter);
 app.use('/api/institutionadmin', institutionAdminRouter);
 app.use('/api/common',commonRouter);
 app.use('/api/image',imageUploadRouter);
+app.use('/api/container', containerRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

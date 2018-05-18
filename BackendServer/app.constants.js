@@ -100,8 +100,17 @@ module.exports = {
   TRUST_ADMIN_DOESNOT_EXIST:{
     message:"Trust admin doesn't exist"
   },
+  TRUST_ADMIN_UPDATE_SUCCESS:{
+    message:"Trust Admin successfully updated"
+  },
   INSTITUTE_CREATION_SUCCESS:{
     message:"Successfully created a institute"
+  },
+  INSTITUTE_ADMIN_DOESNOT_EXIST:{
+    message: "Institute admin doesnot exist"
+  },
+  USER_DOESNOT_EXIST:{
+    message: "User doesnot exist"
   },
   ACCESS_ERRORS: {
     a001: {
