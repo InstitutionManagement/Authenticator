@@ -14,8 +14,15 @@ const appUtils = require('../../utility/app.utils');
 const appConst = require('../../app.constants');
 const authConfig = require('../../config/auth.config');
 
+
+//cache
+const cacheUserInfo = require('../shared/cache.user.info')
+
 const loginRouter = express.Router();
 loginRouter.use(bodyParser.json());
+
+
+
 
 loginRouter.route('/').post((req, res, next) => {
   let dataout = new appUtils.DataModel();
@@ -42,7 +49,8 @@ loginRouter.route('/').post((req, res, next) => {
                 return res.json(dataout);
               } else {
                 dataout.data.user = new appUtils.SuperAdmin(user);
-                return res.json(dataout);
+                cacheUserInfo.storeUserInfo(auth._id , auth.username);
+                res.json(dataout);
               }
             });
             break;
@@ -58,6 +66,7 @@ loginRouter.route('/').post((req, res, next) => {
                 return res.json(dataout);
               } else {
                 dataout.data.user = new appUtils.TrustAdmin(user);
+                cacheUserInfo.storeUserInfo(auth._id , auth.username);
                 return res.json(dataout);
               }
             });
@@ -74,6 +83,7 @@ loginRouter.route('/').post((req, res, next) => {
                 return res.json(dataout);
               } else {
                 dataout.data.user = new appUtils.InstitutionAdmin(user);
+                cacheUserInfo.storeUserInfo(auth._id , auth.username);
                 return res.json(dataout);
               }
             });
