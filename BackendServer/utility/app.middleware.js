@@ -8,6 +8,11 @@ const authConfig = require('../config/auth.config');
 const appUtils = require('../utility/app.utils');
 const appConst = require('../app.constants');
 
+
+//cacheconst 
+const cacheUserInfo = require('../components/shared/cache.user.info')
+
+
 //Function
 const verifyToken = (req, res, next) => {
   let dataout = new appUtils.DataModel();
@@ -22,7 +27,28 @@ const verifyToken = (req, res, next) => {
       dataout.error = { auth: false, message: 'Failed to authenticate token.' };
       return res.status(500).json(dataout);
     }
-    next();
+    else{
+        var userDetails; 
+        userDetails = cacheUserInfo.returnUserInfo();
+        let id  = jwt.decode(token).id;
+        let username = jwt.decode(token).username;
+        
+        if(userDetails && userDetails.id == id && userDetails.username == username)
+            next();
+        else{
+          _UserAuthModel.findById(id, (err, user) => {
+              if(user && user.username == username){
+                cacheUserInfo.storeUserInfo(id , username);
+                next();
+              }
+              else {
+                dataout.error = appConst.ACCESS_ERRORS.a001;
+                res.json(dataout);
+            }
+          });
+
+        }
+      }
   });
 };
 
