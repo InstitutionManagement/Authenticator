@@ -52,7 +52,7 @@ institutionRouter.route('/register').post(_AppMiddlewareService.verifyAccess([0,
 });
 
 //get institutions
-institutionRouter.route('/getInstitutes').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
+institutionRouter.route('/getInstitutions').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
   let dataout = new appUtils.DataModel();
   let condition = {};
   if (!appUtils.IsEmpty(req.body) && !appUtils.IsEmpty(req.body.condition)) {
