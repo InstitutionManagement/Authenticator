@@ -65,7 +65,7 @@ class TrustAdminModel {
     this.auth_id = _trustadmin.auth_id;
     this.username = _trustadmin.username;
     this.image_url = _trustadmin.image_url;
-    this.parent_trust_id = _trustadmin.parent_institute_id;
+    this.parent_trust_id = _trustadmin.parent_trust_id;
     this.user_type = "TrustAdmin";
     if(option && option.status_required && option.status_required === "STATUS_REQUIRED") {
       this.status = _trustadmin.status;
