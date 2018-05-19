@@ -99,35 +99,35 @@ class IdSet{
 
 
 class InstitutionAdminModel {
-  constructor(_instituteadmin, option){
-    this.instituteadmin_id = _instituteadmin._id;
-    this.name = _instituteadmin.name;
-    this.email = _instituteadmin.email;
-    this.phone = _instituteadmin.phone;
-    this.address = _instituteadmin.address;
-    this.auth_id = _instituteadmin.auth_id;
-    this.username = _instituteadmin.username;
-    this.image_url = _instituteadmin.image_url;
-    this.parent_trust_id = _instituteadmin.parent_trust_id;
-    this.parent_institute_id = _instituteadmin.parent_institute_id;
+  constructor(_institutionadmin, option){
+    this.institutionadmin_id = _institutionadmin._id;
+    this.name = _institutionadmin.name;
+    this.email = _institutionadmin.email;
+    this.phone = _institutionadmin.phone;
+    this.address = _institutionadmin.address;
+    this.auth_id = _institutionadmin.auth_id;
+    this.username = _institutionadmin.username;
+    this.image_url = _institutionadmin.image_url;
+    this.parent_trust_id = _institutionadmin.parent_trust_id;
+    this.parent_institution_id = _institutionadmin.parent_institution_id;
     this.user_type = "InstitutionAdmin";
     if(option && option === "STATUS_REQUIRED") {
-      this.status = _instituteadmin.status;
+      this.status = _institutionadmin.status;
     }
   }
 }
 
 class InstituteModel {
-  constructor(_institute, option){
-    this.intitute_id = _institute._id;
-    this.name = _institute.name;
-    this.parent_trust_id = _institute.parent_trust_id;
-    this.email = _institute.email;
-    this.phone = _institute.phone;
-    this.address = _institute.address;
-    this.website = _institute.website;
+  constructor(_institution, option){
+    this.intitute_id = _institution._id;
+    this.name = _institution.name;
+    this.parent_trust_id = _institution.parent_trust_id;
+    this.email = _institution.email;
+    this.phone = _institution.phone;
+    this.address = _institution.address;
+    this.website = _institution.website;
     if(option && option.status_required && option.status_required === "STATUS_REQUIRED") {
-      this.status = _institute.status;
+      this.status = _institution.status;
     }
     if(option && option.trust_name){
       this.trust_name = option.trust_name;

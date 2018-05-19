@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const _UserAuthModel = require('./user.auth.model');
 const _SuperAdminModel = require('../super-admin/super.admin.model');
 const _TrustAdminModel = require('../trust/trust-admin/trust.admin.model');
-const _InstitutionAdmin = require('../institute/institute-admin/institute.admin.model');
+const _InstitutionAdmin = require('../institution/institution-admin/institution.admin.model');
 //Utilities
 const appUtils = require('../../utility/app.utils');
 const appConst = require('../../app.constants');

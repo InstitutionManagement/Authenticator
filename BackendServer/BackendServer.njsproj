@@ -31,10 +31,10 @@
   <ItemGroup>
     <Compile Include="app.constants.js" />
     <Compile Include="app.js" />
-    <Compile Include="components\institute\institute-admin\institute.admin.model.js" />
-    <Compile Include="components\institute\institute-admin\institute.admin.route.js" />
-    <Compile Include="components\institute\institute.model.js" />
-    <Compile Include="components\institute\institute.route.js" />
+    <Compile Include="components\institution\institution-admin\institution.admin.model.js" />
+    <Compile Include="components\institution\institution-admin\institution.admin.route.js" />
+    <Compile Include="components\institution\institution.model.js" />
+    <Compile Include="components\institution\institution.route.js" />
     <Compile Include="components\shared\group.policy.model.js" />
     <Compile Include="components\shared\login.route.js" />
     <Compile Include="components\shared\user.auth.model.js" />
@@ -57,8 +57,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="components\" />
-    <Folder Include="components\institute\" />
-    <Folder Include="components\institute\institute-admin\" />
+    <Folder Include="components\institution\" />
+    <Folder Include="components\institution\institution-admin\" />
     <Folder Include="components\shared\" />
     <Folder Include="components\super-admin\" />
     <Folder Include="components\trust\" />

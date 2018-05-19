@@ -12,7 +12,7 @@ const streamifier = require('streamifier');
 const _SuperAdminModel = require('../super-admin/super.admin.model');
 const _TrustAdminModel = require('../trust/trust-admin/trust.admin.model');
 const _UserAuthModel = require('../shared/user.auth.model');
-const _InstitutionAdmin = require('../institute/institute-admin/institute.admin.model');
+const _InstitutionAdmin = require('../institution/institution-admin/institution.admin.model');
 const _AuthConfig = require('../../config/auth.config');
 
 

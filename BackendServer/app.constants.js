@@ -20,10 +20,10 @@ module.exports = {
     'trustadmin/updateTrustAdmin': [0, 21, 22],
     'trustadmin/getAllTrustAdmin': [0, 13],
 
-    'institute/deleteInstitute/:instituteId': [0, 13],
-    'institute/register': [0, 13],
-    'institute/getAllInstitutes': [0, 13],
-    'institute/updateInstitute': [0, 13],
+    'institution/deleteInstitute/:institutionId': [0, 13],
+    'institution/register': [0, 13],
+    'institution/getAllInstitutes': [0, 13],
+    'institution/updateInstitute': [0, 13],
     
   },
   USER_ERROR: {
@@ -109,7 +109,7 @@ module.exports = {
     message:"Trust Admin successfully updated"
   },
   INSTITUTE_CREATION_SUCCESS:{
-    message:"Successfully created a institute"
+    message:"Successfully created a institution"
   },
   INSTITUTE_ADMIN_DOESNOT_EXIST:{
     message: "Institute admin doesnot exist"
@@ -124,16 +124,16 @@ module.exports = {
     }
   },
   INSTITUTE_ADMIN_REMOVE_SUCCESS:{
-    message: "Successfully removed institute admin"
+    message: "Successfully removed institution admin"
   },
   INSTITUTE_ADMIN_REMOVE_FAILED: {
-    message: "Failed to remove institute admin"
+    message: "Failed to remove institution admin"
   },
   INSTITUTE_REMOVE_SUCCESS : {
-    message: "Sucessfully removed institute"
+    message: "Sucessfully removed institution"
   },
   INSTITUTE_REMOVE_FAILED : {
-    message: "Failed to remove institute"
+    message: "Failed to remove institution"
   },
   INSTITUTION_ADMIN_CREATION_SUCCESS:{
     message: "Successfully created new Institution Admin !!!"

@@ -7,18 +7,18 @@ const mongoose = require('mongoose');
 
 //Services
 const _AppMiddlewareService = require('../../utility/app.middleware');
-const _InstituteModel = require('../institute/institute.model');
+const _InstituteModel = require('../institution/institution.model');
 const _TrustModel = require('../trust/trust.model');
 //Utility
 const appUtils = require('../../utility/app.utils');
 const appConst = require('../../app.constants');
 
-const instituteRouter = express.Router();
-instituteRouter.use(bodyParser.json());
-instituteRouter.use(_AppMiddlewareService.verifyToken);
+const institutionRouter = express.Router();
+institutionRouter.use(bodyParser.json());
+institutionRouter.use(_AppMiddlewareService.verifyToken);
 
-//register an institute
-instituteRouter.route('/register').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
+//register an institution
+institutionRouter.route('/register').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
   let dataout = new appUtils.DataModel();
   let decodedToken = appUtils.DecodeToken(req.headers['x-access-token']);
   _InstituteModel.create(
@@ -39,7 +39,7 @@ instituteRouter.route('/register').post(_AppMiddlewareService.verifyAccess([0, 1
         }
       }
     },
-    (err, institute) => {
+    (err, institution) => {
       if (err) {
         dataout.error = err;
         res.json(dataout);
@@ -51,21 +51,21 @@ instituteRouter.route('/register').post(_AppMiddlewareService.verifyAccess([0, 1
   );
 });
 
-//get institutes
-instituteRouter.route('/getInstitutes').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
+//get institutions
+institutionRouter.route('/getInstitutes').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
   let dataout = new appUtils.DataModel();
   let condition = {};
   if (!appUtils.IsEmpty(req.body) && !appUtils.IsEmpty(req.body.condition)) {
     condition = req.body.condition;
   }
-  _InstituteModel.find(condition, (err, institutes) => {
+  _InstituteModel.find(condition, (err, institutions) => {
     if (err) {
       dataout.error = err;
       res.json(dataout);
     } else {
       let trustIds = [];
-      institutes.forEach(institute => {
-        trustIds.push(institute.parent_trust_id);
+      institutions.forEach(institution => {
+        trustIds.push(institution.parent_trust_id);
       });
       _TrustModel.find(
         {
@@ -83,11 +83,11 @@ instituteRouter.route('/getInstitutes').post(_AppMiddlewareService.verifyAccess(
               trustIdNameMap[trust._id] = trust.name;
             });
             dataout.data = [];
-            institutes.forEach(institute => {
+            institutions.forEach(institution => {
               dataout.data.push(
-                new appUtils.Institute(institute, {
+                new appUtils.Institute(institution, {
                   status_required: 'STATUS_REQUIRED',
-                  trust_name: trustIdNameMap[institute.parent_trust_id]
+                  trust_name: trustIdNameMap[institution.parent_trust_id]
                 })
               );
             });
@@ -99,8 +99,8 @@ instituteRouter.route('/getInstitutes').post(_AppMiddlewareService.verifyAccess(
   });
 });
 
-//Update institute
-instituteRouter.route('/update').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
+//Update institution
+institutionRouter.route('/update').post(_AppMiddlewareService.verifyAccess([0, 1]), (req, res, next) => {
   let dataout = new appUtils.DataModel();
   _InstituteModel.update(
     {
@@ -118,13 +118,13 @@ instituteRouter.route('/update').post(_AppMiddlewareService.verifyAccess([0, 1])
         document_link: req.body.document_link
       }
     },
-    (err, institute) => {
+    (err, institution) => {
       if (err) {
         dataout.error = err;
         res.json(dataout);
         return;
       } else {
-        dataout.data = institute;
+        dataout.data = institution;
         res.json(dataout);
       }
     }
@@ -132,15 +132,15 @@ instituteRouter.route('/update').post(_AppMiddlewareService.verifyAccess([0, 1])
 });
 
 //Delete Institute
-instituteRouter.route('/deleteInstitute/:instituteId').delete(
-  _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['institute/deleteInstitute/:instituteId']),
+institutionRouter.route('/deleteInstitute/:institutionId').delete(
+  _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['institution/deleteInstitute/:institutionId']),
   (req, res, next) => {
     let dataout = new appUtils.DataModel();
-      let instituteId = req.params.instituteId;
+      let institutionId = req.params.institutionId;
       let decodedToken = appUtils.DecodeToken(req.headers['x-access-token']);
       Promise.all([
-        InstituteDelete(instituteId, decodedToken.username, decodedToken.id),
-        InstituteAdminDelete(instituteId, decodedToken.username, decodedToken.id)
+        InstituteDelete(institutionId, decodedToken.username, decodedToken.id),
+        InstituteAdminDelete(institutionId, decodedToken.username, decodedToken.id)
       ])
         .then(data => {
           dataout.data = data;
@@ -153,13 +153,13 @@ instituteRouter.route('/deleteInstitute/:instituteId').delete(
   }
 );
 
-module.exports = instituteRouter;
+module.exports = institutionRouter;
 
 //Service functions
-InstituteDelete = (_instituteId, _username, _auth_id) => {
+InstituteDelete = (_institutionId, _username, _auth_id) => {
   return new Promise((resolve, reject) => {
     _InstituteModel.findByIdAndUpdate(
-      _instituteId,
+      _institutionId,
       {
         $set: {
           status: {
@@ -182,11 +182,11 @@ InstituteDelete = (_instituteId, _username, _auth_id) => {
   });
 };
 
-InstituteAdminDelete = (_parent_institute_id, _username, _auth_id) => {
+InstituteAdminDelete = (_parent_institution_id, _username, _auth_id) => {
   return new Promise((resolve, reject) => {
     _InstituteAdminModel.update(
       {
-        parent_institute_id: _parent_institute_id
+        parent_institution_id: _parent_institution_id
       },
       {
         $set: {
@@ -208,16 +208,16 @@ InstituteAdminDelete = (_parent_institute_id, _username, _auth_id) => {
         } else {
           _InstituteAdminModel.find(
             {
-              parent_institute_id: _parent_institute_id
+              parent_institution_id: _parent_institution_id
             },
-            (err, instituteAdmins) => {
+            (err, institutionAdmins) => {
               if (err) {
                 reject(appConst.INSTITUTE_ADMIN_REMOVE_FAILED);
               } else {
                 admin_auth_ids = [];
-                if (instituteAdmins.length > 0) {
-                  instituteAdmins.forEach(instituteAdmin => {
-                    admin_auth_ids.push(instituteAdmin.auth_id);
+                if (institutionAdmins.length > 0) {
+                  institutionAdmins.forEach(institutionAdmin => {
+                    admin_auth_ids.push(institutionAdmin.auth_id);
                   });
                   _UserAuthModel.update(
                     {

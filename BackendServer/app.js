@@ -21,14 +21,13 @@ db.once('open', function () {
 });
 //Routers
 const trustRouter = require('./components/trust/trust.route');
-const instituteRouter = require('./components/institute/institute.route');
+const institutionRouter = require('./components/institution/institution.route');
 const loginRouter = require('./components/shared/login.route');
 const superAdminRouter = require('./components/super-admin/super.admin.route');
 const trustAdminRouter = require('./components/trust/trust-admin/trust.admin.route');
 const commonRouter = require('./components/shared/common.route');
 const imageUploadRouter = require('./components/shared/image.upload.route');
-const institutionAdminRouter = require('./components/institute/institute-admin/institute.admin.route');
-const containerRouter = require('./components/containers/container.route');
+const institutionAdminRouter = require('./components/institution/institution-admin/institution.admin.route');
 //Middlewares
 app.use(logger('dev'));
 
@@ -53,14 +52,13 @@ app.options('*', cors());
 app.use('/', express.static(path.join(__dirname, './document')));
 app.use('/displayimage', express.static(path.join(__dirname, './images')));
 app.use('/api/trust', trustRouter);
-app.use('/api/institute', instituteRouter);
+app.use('/api/institution', institutionRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/superadmin', superAdminRouter);
 app.use('/api/trustadmin', trustAdminRouter);
 app.use('/api/institutionadmin', institutionAdminRouter);
 app.use('/api/common',commonRouter);
 app.use('/api/image',imageUploadRouter);
-app.use('/api/container', containerRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

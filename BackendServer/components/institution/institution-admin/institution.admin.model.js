@@ -43,7 +43,7 @@ let InstituteAdmin = new Schema({
     ref: 'Trust',
     unique: false
   },
-  parent_institute_id: {
+  parent_institution_id: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'Institute',

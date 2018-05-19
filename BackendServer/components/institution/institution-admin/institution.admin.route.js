@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 //Services
 const _UserAuthModel = require('../../shared/user.auth.model');
 const _AppMiddlewareService = require('../../../utility/app.middleware');
-const _InstitutionAdminModel = require('./institute.admin.model');
+const _InstitutionAdminModel = require('./institution.admin.model');
 //Utilities
 const appUtils = require('../../../utility/app.utils');
 const appConst = require('../../../app.constants');
