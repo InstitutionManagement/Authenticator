@@ -85,7 +85,7 @@ institutionRouter.route('/getInstitutions').post(_AppMiddlewareService.verifyAcc
             dataout.data = [];
             institutions.forEach(institution => {
               dataout.data.push(
-                new appUtils.Institute(institution, {
+                new appUtils.Institution(institution, {
                   status_required: 'STATUS_REQUIRED',
                   trust_name: trustIdNameMap[institution.parent_trust_id]
                 })

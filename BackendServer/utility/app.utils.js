@@ -120,7 +120,7 @@ class InstitutionAdminModel {
   }
 }
 
-class InstituteModel {
+class  InstitutionModel {
   constructor(_institution, option){
     this.intitute_id = _institution._id;
     this.name = _institution.name;
@@ -148,6 +148,6 @@ module.exports = {
   Trust : TrustModel,
   IdSet: IdSet,
   InstitutionAdmin : InstitutionAdminModel, 
-  Institute : InstituteModel
+  Institution : InstitutionModel
 };
 

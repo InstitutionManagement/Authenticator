@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let Institute = new Schema({
+let  Institution = new Schema({
   name: {
     type: String,
     required: true,
@@ -64,4 +64,4 @@ let Institute = new Schema({
   }
 });
 
-module.exports = mongoose.model('Institute', Institute);
+module.exports = mongoose.model('Institution',  Institution);
