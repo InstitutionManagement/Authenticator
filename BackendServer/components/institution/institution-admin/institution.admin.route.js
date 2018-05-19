@@ -99,7 +99,7 @@ InstitutionAdminRouter.route('/register')
     );
 });
 
-InstitutionAdminRouter.route('/getInstituteAdmins')
+InstitutionAdminRouter.route('/getInstitutionAdmins')
 .post(_AppMiddlewareService.verifyAccess([0]), (req, res) => {
     let dataout = new appUtils.DataModel()
     let condition = {};

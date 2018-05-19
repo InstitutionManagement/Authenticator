@@ -20,10 +20,10 @@ module.exports = {
     'trustadmin/updateTrustAdmin': [0, 21, 22],
     'trustadmin/getAllTrustAdmin': [0, 13],
 
-    'institution/deleteInstitute/:institutionId': [0, 13],
+    'institution/deleteInstitution/:institutionId': [0, 13],
     'institution/register': [0, 13],
-    'institution/getAllInstitutes': [0, 13],
-    'institution/updateInstitute': [0, 13],
+    'institution/getAllInstitutions': [0, 13],
+    'institution/updateInstitution': [0, 13],
     
   },
   USER_ERROR: {
