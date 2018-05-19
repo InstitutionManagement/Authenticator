@@ -132,8 +132,8 @@ institutionRouter.route('/update').post(_AppMiddlewareService.verifyAccess([0, 1
 });
 
 //Delete Institute
-institutionRouter.route('/deleteInstitute/:institutionId').delete(
-  _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['institution/deleteInstitute/:institutionId']),
+institutionRouter.route('/deleteInstitution/:institutionId').delete(
+  _AppMiddlewareService.verifyAccess(appConst.API_ACCESS_CODE['institution/deleteInstitution/:institutionId']),
   (req, res, next) => {
     let dataout = new appUtils.DataModel();
       let institutionId = req.params.institutionId;
