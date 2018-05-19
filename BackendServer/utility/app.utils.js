@@ -111,8 +111,11 @@ class InstitutionAdminModel {
     this.parent_trust_id = _institutionadmin.parent_trust_id;
     this.parent_institution_id = _institutionadmin.parent_institution_id;
     this.user_type = "InstitutionAdmin";
-    if(option && option === "STATUS_REQUIRED") {
+    if(option && option.status_required === "STATUS_REQUIRED") {
       this.status = _institutionadmin.status;
+    }
+    if(option && option.institution_name){
+      this.institution_name = option.institution_name;
     }
   }
 }
