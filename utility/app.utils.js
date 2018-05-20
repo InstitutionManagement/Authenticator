@@ -122,7 +122,7 @@ class InstitutionAdminModel {
 
 class  InstitutionModel {
   constructor(_institution, option){
-    this.intitute_id = _institution._id;
+    this.institution_id = _institution._id;
     this.name = _institution.name;
     this.parent_trust_id = _institution.parent_trust_id;
     this.email = _institution.email;
