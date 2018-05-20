@@ -115,7 +115,7 @@ InstitutionAdminRouter.route('/getInstitutionAdmins')
             } else {
                 dataout.data = [];
                 institutionadmins.forEach(ia => {
-                    dataout.data.push(new appUtils.InstitutionAdmin(ia, req.body.status));
+                    dataout.data.push(new appUtils.InstitutionAdmin(ia, req.body));
                 });
                 res.json(dataout);
             }
