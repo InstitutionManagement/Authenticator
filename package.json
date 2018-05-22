@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "autoprefixer": "7.1.1",
+    "axios": "^0.18.0",
     "azure-storage": "^2.8.2",
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
@@ -22,6 +23,7 @@
     "file-loader": "0.11.2",
     "formidable": "^1.2.1",
     "fs-extra": "3.0.1",
+    "http-proxy": "^1.17.0",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.1.1",
     "mocha": "^5.1.1",
@@ -40,7 +42,7 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "format": "prettier --single-quote --print-width=120 --write --parser=flow --tab-width=2  ./components/**/*.js",
+    "format": "prettier --single-quote --print-width=120 --write --parser=flow --tab-width=2  ./models/*.js",
     "start": "concurrently --kill-others  \"node app.js\""
   },
   "devDependencies": {

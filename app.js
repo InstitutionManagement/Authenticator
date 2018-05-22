@@ -1,4 +1,5 @@
 ﻿'use strict';
+//Imports
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -9,26 +10,22 @@ var mongoose = require('mongoose');
 var cors = require('cors');
 var debug = require('debug');
 const upload = require('express-fileupload');
+import{ DatabaseConfig } from './config';
 
-var app = express();
-var url = 'mongodb://adwz007:700zwda@ds119268.mlab.com:19268/schooldb';
-mongoose.connect(url);
+
+//Connect to DB
+mongoose.connect(DatabaseConfig.MongoURL);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error to  db:'));
 db.once('open', function () {
-    // we're connected!
     console.log('Connected correctly to server');
 });
+
+
 //Routers
-const trustRouter = require('./components/trust/trust.route');
-const institutionRouter = require('./components/institution/institution.route');
-const loginRouter = require('./components/shared/login.route');
-const superAdminRouter = require('./components/super-admin/super.admin.route');
-const trustAdminRouter = require('./components/trust/trust-admin/trust.admin.route');
-const commonRouter = require('./components/shared/common.route');
-const imageUploadRouter = require('./components/shared/image.upload.route');
-const institutionAdminRouter = require('./components/institution/institution-admin/institution.admin.route');
+
 //Middlewares
+var app = express();
 app.use(logger('dev'));
 
 app.use(cookieParser());
@@ -49,16 +46,7 @@ app.options('*', cors());
 
 
 //Routes
-app.use('/', express.static(path.join(__dirname, './document')));
-app.use('/displayimage', express.static(path.join(__dirname, './images')));
-app.use('/api/trust', trustRouter);
-app.use('/api/institution', institutionRouter);
-app.use('/api/login', loginRouter);
-app.use('/api/superadmin', superAdminRouter);
-app.use('/api/trustadmin', trustAdminRouter);
-app.use('/api/institutionadmin', institutionAdminRouter);
-app.use('/api/common',commonRouter);
-app.use('/api/image',imageUploadRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
