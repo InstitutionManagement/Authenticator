@@ -1,4 +1,3 @@
-import Axios from 'axios';
 
 const _UserAuthModel = require('../models/userAuth.model');
 const _AppUtil = require('../utility');
@@ -9,7 +8,7 @@ const httpProxy = require('http-proxy');
 const apiProxy = httpProxy.createProxy();
 const axios = require('axios');
 
-export const findOnewithUsername = (_username) => {
+const findOnewithUsername = (_username) => {
     return new Promise((resolve, reject)=>{
         _UserAuthModel.findOne(
             {
@@ -28,10 +27,20 @@ export const findOnewithUsername = (_username) => {
     })
 }
 
-export const isPasswordCorrect = (_password, _hashedPassword) =>{
+const isPasswordCorrect = (_password, _hashedPassword) =>{
     return bcrypt.compareSync(_password, _hashedPassword);
 }
 
-export const fetchUserDetails = async(_queryString, baseurl, route)=>{
-    return Axios.get('')
+const fetchUserDetails = (baseurl, route, query = {})=>{
+    let _url = _AppUtil.CreateURL(baseurl,route);
+    console.log("_url : "+ _url);
+    return Axios.post(_url, query)
+        
+}
+
+
+module.exports = {
+    findOnewithUsername: findOnewithUsername,
+    isPasswordCorrect: isPasswordCorrect,
+    fetchUserDetails: fetchUserDetails
 }

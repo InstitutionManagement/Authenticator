@@ -4,6 +4,5 @@ module.exports = {
     },
     WRONG_USERNAME_PASSWORD: {
         message: "Either email or password is wrong"
-    },
-    USER
+    }
 }

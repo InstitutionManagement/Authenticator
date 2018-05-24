@@ -26,7 +26,6 @@
     "http-proxy": "^1.17.0",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.1.1",
-    "mocha": "^5.1.1",
     "mongoose": "^5.0.17",
     "morgan": "~1.9.0",
     "node-cache": "^4.2.0",
@@ -43,9 +42,13 @@
   },
   "scripts": {
     "format": "prettier --single-quote --print-width=120 --write --parser=flow --tab-width=2  ./models/*.js",
-    "start": "concurrently --kill-others  \"node app.js\""
+    "start": "concurrently --kill-others  \"node app.js\"",
+    "test": "node_modules/.bin/mocha"
   },
   "devDependencies": {
-    "debug": "^2.6.9"
+    "chai": "^4.1.2",
+    "debug": "^2.6.9",
+    "mocha": "^5.2.0",
+    "nock": "^9.2.6"
   }
 }

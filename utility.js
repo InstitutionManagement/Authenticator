@@ -1,11 +1,11 @@
+const URL = require('url').URL;
 
-import{ URL } from 'url';
-export const IsWordLengthValid = word => {
+const IsWordLengthValid = word => {
     return String(word).length < 10;
 }
 
 
-export const IsEmpty = obj => {
+const IsEmpty = obj => {
     if (obj == null) return true;
     if (obj.length > 0) return false;
     if (obj.length === 0) return true;
@@ -15,8 +15,8 @@ export const IsEmpty = obj => {
     }
     return true;
   };
-  
-export const IsValidWord = (req, res, next) => {
+
+const IsValidWord = (req, res, next) => {
     if(!IsEmpty(req.body) && !IsEmpty(req.body.username) && !IsEmpty(req.body.password)){
         if(IsWordLengthValid(req.body.username) && IsWordLengthValid(req.body.password)){
             next();
@@ -28,14 +28,20 @@ export const IsValidWord = (req, res, next) => {
     }
 }
 
-export const ProxyRules = (() => {
+const ProxyRules = (() => {
 
 })();
 
-export const CreateURL = (baseURL, route, queryParam) => {
+const CreateURL = (baseURL, route) => {
     let _url = new URL(route,baseURL);
-    for(var key in queryParam){
-        _url.searchParams.set(key, queryParam[key]);
-    }
     return _url;
+}
+
+
+module.exports = {
+    IsWordLengthValid: IsWordLengthValid,
+    IsEmpty: IsEmpty,
+    IsValidWord: IsValidWord,
+    ProxyRules: ProxyRules,
+    CreateURL: CreateURL
 }
